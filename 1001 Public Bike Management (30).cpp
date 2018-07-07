@@ -27,9 +27,9 @@ int main() {
 	int cmax, stanum, index, roadnum;
 	map<std::pair<int, int>, int> timecost;
 	cin >> cmax >> stanum >> index >> roadnum;
-	vector<set<int>> fastroad(stanum + 1, { 0 });
+	vector<vector<int>> fastroad(stanum + 1, { 0 });
 	vector<std::pair<int, int>> ctrans(stanum + 1, { 0,0 });
-	vector<int> csta(1,-1);
+	vector<int> csta(1, -1);
 	for (int i = 0;i < stanum;i++) {
 		int temp;
 		cin >> temp;
@@ -40,16 +40,17 @@ int main() {
 		int time;
 		cin >> temp_pair.first >> temp_pair.second >> time;
 		timecost[temp_pair] = time;
+		timecost[{temp_pair.second, temp_pair.first}] = time;
 		if (temp_pair.first == 0) {
 			fastroad[temp_pair.second] = { 0, temp_pair.second };
-			int temp_ctrans = csta[temp_pair.second] - cmax/2;
+			int temp_ctrans = csta[temp_pair.second] - cmax / 2;
 			if (temp_ctrans > 0)
 				ctrans[temp_pair.second].second = temp_ctrans;
 			else ctrans[temp_pair.second].first = -temp_ctrans;
 		}
 	}
 	for (int i = 1;i <= index;i++) {
-		for (int j = 0;j < i;j++) {
+		for (int j = 0;j <= stanum;j++) {
 			if (timecost[{0, j}] != 0 && timecost[{j, i}] != 0) {
 				int temp = timecost[{0, j}] + timecost[{j, i}];
 				int temp_ctrans = csta[i] - cmax / 2 + ctrans[j].second - ctrans[j].first;
@@ -58,7 +59,7 @@ int main() {
 					if (temp_ctrans > 0) ctrans[i].second = temp_ctrans;
 					else ctrans[i].first = -temp_ctrans;
 					fastroad[i] = fastroad[j];
-					fastroad[i].insert(i);
+					fastroad[i].push_back(i);
 				}
 				else {
 					if (temp == timecost[{0, i}]) {
@@ -68,7 +69,7 @@ int main() {
 							else ctrans[i] = { -temp_ctrans,0 };
 							timecost[{0, i}] = temp;
 							fastroad[i] = fastroad[j];
-							fastroad[i].insert(i);
+							fastroad[i].push_back(i);
 						}
 					}
 					else {
@@ -78,7 +79,7 @@ int main() {
 								ctrans[i] = { 0,temp_ctrans };
 							else ctrans[i] = { -temp_ctrans,0 };
 							fastroad[i] = fastroad[j];
-							fastroad[i].insert(i);
+							fastroad[i].push_back(i);
 						}
 					}
 				}
