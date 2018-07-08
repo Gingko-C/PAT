@@ -1,0 +1,47 @@
+#include <string>
+using std::string;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <algorithm>
+#include <sstream>
+#include <iomanip>
+#include <vector>
+using std::vector;
+int main() {
+    vector<int> a(4, 0);
+    int a4_sum = 0, a4_num = 0, a5 = 0;
+    double a4=0.0;
+    int temp;
+    string sin;
+    std::getline(cin, sin);
+    std::istringstream is(sin);
+    int a2_sign = 1;
+    is >> temp;
+    while (is >> temp) {
+        if (temp % 10 == 0) a[1] += temp;
+        if (temp % 5 == 1) {
+            if (a2_sign == 1) a[2] += temp;
+            else a[2] -= temp;
+            a2_sign = -a2_sign;
+        }
+        if (temp % 5 == 2) a[3]++;
+        if (temp % 5 == 3) {
+            a4_sum += temp;
+            a4_num++;
+        }
+        if (temp % 5 == 4) a5 = std::max(a5, temp);
+    }
+    if (a4_num != 0) a4 = double(a4_sum) / double(a4_num);
+    for (int i = 1;i != 4;i++) {
+        if (a[i] == 0)cout << "N" << " ";
+        else cout << a[i] << " ";
+    }
+    if (a4 == 0) cout << "N" << " ";
+    else cout << std::fixed << std::setprecision(1) << a4 << " ";
+    if (a5 == 0) cout << "N" << endl;
+    else cout << a5 << endl;
+    system("pause");
+    return 0;
+}
