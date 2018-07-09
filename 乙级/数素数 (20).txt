@@ -1,0 +1,39 @@
+#include <vector>
+using std::vector;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <algorithm>
+ 
+bool IsPrime(unsigned n) {
+    if (n < 2) return false;
+    for (int i = 2;i <= sqrt(n);i++) {
+        if (n%i == 0) return false;
+    }
+    return true;
+}
+ 
+int main() {
+    int begin_no, end_no;
+    int num = 0;
+    vector<int> res;
+    cin >> begin_no >> end_no;
+    for (int i = 2;;i++) {
+        if (IsPrime(i)) {
+            num++;
+            if (num >= begin_no) res.push_back(i);
+            if (num == end_no) break;
+        }
+    }
+    for (int i = 1;i <= res.size();i++) {
+        if(i==res.size()) {
+            cout<<res[i-1]<<endl;
+            break;      
+        }
+        if (i % 10 != 0) cout << res[i - 1] << " ";
+        else cout << res[i - 1] << endl;
+    }
+    system("pause");
+    return 0;
+}
