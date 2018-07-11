@@ -1,0 +1,50 @@
+#include <vector>
+using std::vector;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <algorithm>
+ 
+struct Stu
+{
+    Stu(int a, int b, int c,int d) :stu_no(a), de_score(b), cai_score(c),stu_type(d) {}
+    int stu_no, de_score, cai_score, stu_type;
+};
+ 
+bool IsBetter(Stu&lhs, Stu&rhs) {
+    if (lhs.stu_type != rhs.stu_type) return lhs.stu_type < rhs.stu_type;
+    if (lhs.de_score + lhs.cai_score == rhs.de_score + rhs.cai_score) {
+        if (lhs.de_score == rhs.de_score) return lhs.stu_no < rhs.stu_no;
+        return lhs.de_score > rhs.de_score;
+    }
+    return lhs.de_score + lhs.cai_score > rhs.de_score + rhs.cai_score;
+}
+ 
+int witchtype(int L_grade, int H_grade, int de_score, int cai_score) {
+    if (de_score >= H_grade && cai_score >= H_grade) return 0;
+    if (de_score >= H_grade && cai_score >= L_grade) return 1;
+    if (de_score >= L_grade && cai_score >= L_grade &&de_score >= cai_score) return 2;
+    if (de_score >= L_grade && cai_score >= L_grade) return 3;
+    return 4;
+}
+ 
+int main() {
+    int total_num, L_grade, H_grade;
+    int stu_no, de_score, cai_score, stu_type;
+    vector<Stu> stus;
+    cin >> total_num >> L_grade >> H_grade;
+    for (int i = 0;i < total_num;i++) {
+        cin >> stu_no >> de_score >> cai_score;
+        stu_type = witchtype(L_grade, H_grade, de_score, cai_score);
+        if(stu_type!=4)
+            stus.push_back({ stu_no, de_score, cai_score ,stu_type });
+    }
+    std::sort(stus.begin(), stus.end(), IsBetter);
+    cout << stus.size() << endl;
+    for (auto i : stus) {
+        cout << i.stu_no << " " << i.de_score << " " << i.cai_score << endl;
+    }
+    system("pause");
+    return 0;
+}
