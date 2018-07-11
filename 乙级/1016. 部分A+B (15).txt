@@ -1,0 +1,22 @@
+#include <string>
+using std::string;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <algorithm>
+ 
+int main() {
+    string a_str="", b_str="", pa_str="0", pb_str="0";
+    char da_c, db_c;
+    cin >> a_str >> da_c >> b_str >> db_c;
+    for (auto a : a_str) {
+        if (a == da_c) pa_str += a;
+    }
+    for (auto b : b_str) {
+        if (b == db_c) pb_str += b;
+    }
+    cout << std::stol(pa_str) + std::stol(pb_str) << endl;
+    system("pause");
+    return 0;
+}
