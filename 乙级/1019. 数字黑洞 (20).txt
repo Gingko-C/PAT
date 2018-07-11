@@ -1,0 +1,37 @@
+#include <string>
+using std::string;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <iomanip>
+using std::setw;
+#include <algorithm>
+ 
+int makeint4(int i) {
+    if (i < 10) return i * 1000;
+    if (i < 100) return i * 100;
+    if (i < 1000) return i * 10;
+    return i;
+}
+ 
+int main() {
+    int num;
+    cin >> num;
+    while (true) {
+        num = makeint4(num);
+        string num_str = std::to_string(num);
+        std::sort(num_str.begin(), num_str.end());
+        int up_num = std::stoi(num_str);
+        int down_num = std::stoi(string(num_str.rbegin(), num_str.rend()));
+        if (down_num == up_num) {
+            cout << std::setfill('0') << setw(4) << down_num << " - " << setw(4) << up_num << " = " << setw(4) << 0 << endl;
+            break;
+        }
+        num = down_num - up_num;
+        cout << std::setfill('0') << setw(4) << down_num << " - " << setw(4) << up_num << " = " << setw(4) << num << endl;
+        if (num == 6174) break;
+    }
+    system("pause");
+    return 0;
+}
