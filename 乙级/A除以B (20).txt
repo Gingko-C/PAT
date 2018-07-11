@@ -1,0 +1,28 @@
+#include <string>
+using std::string;
+#include <vector>
+using std::vector;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+ 
+int main() {
+    string num, temp = "";
+    int divisor, head = 0;
+    bool flag = false;
+    vector<int> res;
+    cin >> num >> divisor;
+    for (int i = 0;i < num.size();i++) {
+        int temp_num = head * 10 + num[i] - '0';
+        if (flag == false) {
+            flag = true;
+            if (temp_num / divisor >= 1) cout << temp_num / divisor;
+        }
+        else cout << temp_num / divisor;
+        head = temp_num % divisor;
+    }
+    cout << " " << head << endl;
+    system("pause");
+    return 0;
+}
