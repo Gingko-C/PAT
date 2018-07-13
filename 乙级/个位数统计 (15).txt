@@ -1,0 +1,27 @@
+#include <string>
+using std::string;
+#include <vector>
+using std::vector;
+#include <map>
+using std::map;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <algorithm>
+ 
+int main() {
+    string in_put;
+    cin >> in_put;
+    map<char, int> m;
+    for (char c : in_put) {
+        m[c]++;
+    }
+    vector<std::pair<char, int>> v(m.begin(), m.end());
+    std::sort(v.begin(), v.end());
+    for (auto i : v) {
+        cout << i.first << ":" << i.second << endl;
+    }
+    system("pause");
+    return 0;
+}
