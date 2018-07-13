@@ -1,0 +1,56 @@
+#include <string>
+using std::string;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <algorithm>
+ 
+int main() {
+    string in_put;
+    cin >> in_put;
+    auto e = std::find(in_put.begin(), in_put.end(), 'E');
+    string e_x(e+2,in_put.end());
+    char sign_x(*(e + 1));
+    char sign(in_put.front());
+    in_put.erase(e, in_put.end());
+    in_put.erase(in_put.begin());
+    int move = stoi(e_x);
+    auto p = std::find(in_put.begin(), in_put.end(), '.');
+    if (sign_x == '+') {
+        int inter = p - in_put.end();
+        int temp = inter + move;
+        if (temp > 0) {
+            in_put.erase(p);
+            for (int i = 0;i <= temp;i++) {
+                in_put.push_back('0');
+            }
+        }
+        if (temp == 0) in_put.erase(p);
+        if (temp < 0) {
+            in_put.insert(p + move + 1, '.');
+            if (p < in_put.end()) in_put.erase(p);
+        }
+ 
+ 
+    }
+    else {
+        int inter = p - in_put.begin();
+        int temp = inter - move;
+        if (temp < 1) {
+            in_put.erase(p);
+            for (int i = 0;i <= -temp;i++) {
+                in_put.insert(in_put.begin(), '0');
+            }
+            in_put.insert(in_put.begin() + 1, '.');
+        }
+        if (temp >= 1) {
+            in_put.erase(p);
+            in_put.insert(p - move, '.');
+        }
+    }
+    if (sign == '-') in_put.insert(in_put.begin(),'-');
+    cout << in_put << endl;
+    system("pause");
+    return 0;
+}
