@@ -1,0 +1,38 @@
+#include <vector>
+using std::vector;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <iomanip>
+using std::setw;
+using std::setprecision;
+#include <algorithm>
+ 
+int main() {
+    double res = 0;
+    int kinds, needs, temp;
+    cin >> kinds >> needs;
+    vector<int> total_num, total_price;
+    vector<std::pair<int, int>> mooncakes;
+    for (int i = 0;i < kinds;i++) {
+        cin >> temp;
+        mooncakes.push_back({ temp,0 });
+    }
+    for (int i = 0;i < kinds;i++) {
+        cin >> temp;
+        mooncakes[i].second = temp;
+    }
+    std::sort(mooncakes.begin(), mooncakes.end(), [](std::pair<int, int> lhs, std::pair<int, int> rhs) {return double(lhs.second) / double(lhs.first) > double(rhs.second) / double(rhs.first);});
+    for (auto b = mooncakes.begin();b != mooncakes.end();b++) {
+        if (needs < (*b).first) {
+            res += double(needs)*double((*b).second) / double((*b).first);
+            break;
+        }
+        res += (*b).second;
+        needs -= (*b).first;
+    }
+    cout << std::fixed << setprecision(2) << res << endl;
+    system("pause");
+    return 0;
+}
