@@ -1,0 +1,55 @@
+#include <vector>
+using std::vector;
+#include <map>
+using std::map;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <algorithm>
+#include <iomanip>
+ 
+struct LinkNode {
+    int addr;
+    int data;
+    int next;
+};
+ 
+int main() {
+    vector<LinkNode> vln;
+    int addr;
+    int data;
+    int next;
+    int root, total_num, n;
+    cin >> root >> total_num >> n;
+    int temp_addr = root;
+    map<int, LinkNode> mil;
+    for (int i = 0;i < total_num;i++) {
+        cin >> addr >> data >> next;
+        mil[addr] = { addr,data,next };
+    }
+    while (temp_addr != -1) {
+        vln.push_back(mil[temp_addr]);
+        temp_addr = mil[temp_addr].next;
+    }
+    int temp = 0;
+    while (temp + n <= vln.size()) {
+        for (int i = temp;i < (2*temp + n) / 2;i++) {
+            auto t = vln[i];
+            vln[i] = vln[2*temp+n-1-i];
+            vln[2*temp+n-1-i] = t;
+        }
+        temp += n;
+    }
+    for (int i = 0;i < vln.size() - 1;i++) {
+        vln[i].next = vln[i + 1].addr;
+    }
+    vln.back().next = -1;
+    for (auto i : vln) {
+        cout << std::setw(5) << std::setfill('0') << i.addr << " " << i.data << " ";
+        if (i.next != -1) cout << std::setw(5) << std::setfill('0') << i.next << endl;
+        else cout << -1 << endl;
+    }
+    system("pause");
+    return 0;
+}
