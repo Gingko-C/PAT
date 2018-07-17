@@ -1,0 +1,66 @@
+#include <string>
+using std::string;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <algorithm>
+#include <queue>
+using std::priority_queue;
+ 
+struct Person
+{
+    string name;
+    int year, month, day;
+    bool operator<(const Person &p) const {
+        if (year > p.year) return true;
+        if (year < p.year) return false;
+        if (month > p.month)return true;
+        if (month < p.month) return false;
+        if (day > p.day)return true;
+        return false;
+    }
+};
+ 
+bool isReal(int year, int month, int day) {
+    if (2014 - year > 200) return false;
+    if (2014 - year == 200) {
+        if (month < 9) return false;
+        if (month == 9) {
+            if (day < 6)return false;
+        }
+    }
+    if (year > 2014)return false;
+    if (year == 2014) {
+        if (month > 9)return false;
+        if (month == 9) {
+            if (day > 6) return false;
+        }
+    }
+    return true;
+}
+ 
+int main() {
+    int population;
+    string name,date;
+    int year, month, day;
+    priority_queue<Person> pqp;
+    cin >> population;
+    tm tp;
+    for (int i = 0;i < population;i++) {
+        cin >> name >> date;
+        year = std::stoi(string(date.begin(), date.begin() + 4));
+        month = std::stoi(string(date.begin() + 5, date.begin() + 7));
+        day = std::stoi(string(date.begin() + 8, date.begin() + 10));
+        if (isReal(year, month, day)) {
+            pqp.push({ name,year,month,day });
+        }
+    }
+    cout << pqp.size() << " " << pqp.top().name << " " ;
+    for (int i = 0;pqp.size() > 1;i++) {
+        pqp.pop();
+    }
+    cout << pqp.top().name << endl;
+    system("pause");
+    return 0;
+}
