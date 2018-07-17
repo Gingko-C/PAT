@@ -1,0 +1,29 @@
+#include <vector>
+using std::vector;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <algorithm>
+ 
+int main() {
+    int n, p;
+    cin >> n >> p;
+    vector<int> v;
+    int temp;
+    int max_length = 1;
+    for (int i = 0;i < n;i++) {
+        cin >> temp;
+        v.push_back(temp);
+    }
+    std::sort(v.begin(), v.end());
+    for (int i = 0;i < n;i++) {
+        for (int j = i + max_length;j < n;j++) {
+            if (v[i] * p >= v[j])
+                max_length++;
+        }
+    }
+    cout << max_length << endl;
+    system("pause");
+    return 0;
+}
