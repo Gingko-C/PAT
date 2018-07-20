@@ -1,0 +1,72 @@
+#include <vector>
+using std::vector;
+#include <iostream>
+using std::cin;
+using std::cout;
+using std::endl;
+#include <queue>
+using std::queue;
+ 
+#define INT_MAX 100000
+ 
+struct Node
+{
+    bool visit = 0;
+    int d = INT_MAX;
+    int pi = -1;
+    bool child = 0;
+};
+ 
+int main() {
+    int vnum, fvnum, s, max_d = 0;
+    cin >> vnum >> fvnum;
+    vector<Node> v(vnum);
+    vector<vector<int>> f2c(vnum);
+    int fid, cnum, cid;
+    for (int i = 0;i < fvnum;i++) {
+        cin >> fid >> cnum;
+        --fid;
+        for (int j = 0;j < cnum;j++) {
+            cin >> cid;
+            f2c[fid].push_back(--cid);
+            v[fid].child = 1;
+            v[cid].pi = fid;
+        }
+    }
+    for (int i = 0;i < vnum;i++) {
+        if (v[i].pi == -1) {
+            s = i;
+            break;
+        }
+    }
+    v[s].visit = 1;
+    v[s].d = 0;
+    queue<int> q;
+    q.push(s);
+    while (!q.empty()) {
+        int temp_root = q.front();
+        q.pop();
+        for (int i = 0;i < f2c[temp_root].size();i++) {
+            if (v[f2c[temp_root][i]].visit == 0) {
+                v[f2c[temp_root][i]].visit = 1;
+                v[f2c[temp_root][i]].d = v[temp_root].d + 1;
+                if (v[f2c[temp_root][i]].child) q.push(f2c[temp_root][i]);
+                max_d = (v[f2c[temp_root][i]].d > max_d) ? v[f2c[temp_root][i]].d : max_d;
+            }
+        }
+    }
+    vector<int> cofd(max_d + 1);
+    for (int i = 0;i < vnum;i++) {
+        cofd[v[i].d]++;
+    }
+    int maxc = 0, maxd = 0;
+    for (int i = 0;i <= max_d;i++) {
+        if (cofd[i] > maxc) {
+            maxc = cofd[i];
+            maxd = i;
+        }
+    }
+    cout << maxc << " " << ++maxd << endl;
+    system("pause");
+    return 0;
+}
