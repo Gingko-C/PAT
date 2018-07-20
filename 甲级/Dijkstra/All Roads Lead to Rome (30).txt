@@ -1,0 +1,103 @@
+#include <vector>
+using std::vector;
+#include <map>
+using std::map;
+#include <string>
+using std::string;
+#include <iostream>
+using std::cin;
+using std::cout;
+using std::endl;
+#include <algorithm>
+ 
+#define INT_MAX 100000
+ 
+int main() {
+    int vnum, wnum, dest;
+    int baseP = 0;
+    string name;
+    cin >> vnum >> wnum >> name;
+    string bcityname, ecityname;
+    vector<int> happiness(vnum);
+    vector<int> dis(vnum, INT_MAX);
+    vector<bool> flag(vnum, 0);
+    vector<string> name_order;
+    vector<vector<int>> wcost(vnum, vector<int>(vnum, INT_MAX));
+    vector<vector<int>> wh;
+    vector<vector<vector<int>>> sws(vnum);
+    map<string, int> n2n;
+    n2n.insert({ name, 0 });
+    name_order.push_back(name);
+    for (int i = 1;i < vnum;i++) {
+        cin >> name >> happiness[i];
+        n2n[name] = i;
+        name_order.push_back(name);
+        if (name == "ROM") dest = i;
+    }
+    for (int i = 0;i < wnum;i++) {
+        cin >> bcityname >> ecityname;
+        cin >> wcost[n2n[bcityname]][n2n[ecityname]];
+        wcost[n2n[ecityname]][n2n[bcityname]] = wcost[n2n[bcityname]][n2n[ecityname]];
+        if (n2n[bcityname] == 0) {
+            dis[n2n[ecityname]] = wcost[n2n[bcityname]][n2n[ecityname]];
+            sws[n2n[ecityname]] = { { 0,n2n[ecityname] } };
+        }
+        if (n2n[ecityname] == 0) {
+            dis[n2n[bcityname]] = wcost[n2n[bcityname]][n2n[ecityname]];
+            sws[n2n[bcityname]] = { { 0,n2n[bcityname] } };
+        }
+    }
+    dis[0] = 0;
+    flag[0] = 1;
+    for (int i = 1;i < vnum;i++) {
+        int min = INT_MAX;
+        for (int j = 0;j < vnum;j++) {
+            if (flag[j] == 0 && dis[j] < min) {
+                min = dis[j];
+                baseP = j;
+            }
+        }
+        flag[baseP] = 1;
+        if (baseP == dest) break;
+        for (int j = 0;j < vnum;j++) {
+            int temp_cost = (wcost[baseP][j] == INT_MAX) ? INT_MAX : dis[baseP] + wcost[baseP][j];
+            if (temp_cost < dis[j]) {
+                dis[j] = temp_cost;
+                sws[j] = sws[baseP];
+                for (auto &w : sws[j]) {
+                    w.push_back(j);
+                }
+            }
+            else if (temp_cost == dis[j]) {
+                for (auto w : sws[baseP]) {
+                    sws[j].push_back(w);
+                    sws[j].back().push_back(j);
+                }
+            }
+        }
+    }
+ 
+    for (int i = 0;i < sws[dest].size();i++) {
+        int h = 0;
+        for (auto c : sws[dest][i]) {
+            h += happiness[c];
+        }
+        int avgh = h / (sws[dest][i].size() - 1);
+        wh.push_back({ h,avgh,i });
+    }
+ 
+    std::sort(wh.begin(), wh.end());
+ 
+    cout << sws[dest].size() << " " << dis[dest] << " "<<wh.back()[0]<<" "<<wh.back()[1]<<endl;
+    bool flag_cout = false;
+    for (auto i : sws[dest][wh.back()[2]]) {
+        if (flag_cout == false) {
+            cout << name_order[i];
+            flag_cout = true;
+        }
+        else cout << "->" << name_order[i];
+    }
+    cout << endl;
+    system("pause");
+    return 0;
+}
