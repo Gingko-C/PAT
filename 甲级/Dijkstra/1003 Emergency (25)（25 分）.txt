@@ -1,0 +1,83 @@
+//挂掉一个测试点 得22分
+//完全不明挂掉是为什么 需要重做
+
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <vector>
+using std::vector;
+
+#define INT_MAX 1000000
+
+int main() {
+	int vnum, wnum, c1, c2;
+	cin >> vnum >> wnum >> c1 >> c2;
+	int temp;
+	vector<int> crtnum;
+	vector<int> dis(vnum, INT_MAX);
+	vector<bool> flag(vnum, false);
+	vector<vector<vector<int>>> sws(vnum, vector<vector<int>>(vnum));
+	for (int i = 0;i < vnum;i++) {
+		cin >> temp;
+		crtnum.push_back(temp);
+	}
+	if (c1 == c2) cout << 1 << " " << crtnum[c1] << endl;
+	vector<vector<int>> wmat(vnum, vector<int>(vnum, INT_MAX));
+	int cb, ce, wl;
+	for (int i = 0;i < wnum;i++) {
+		cin >> cb >> ce >> wl;
+		wmat[cb][ce] = wl;
+		wmat[ce][cb] = wl;
+		if (cb == c1) {
+			dis[ce] = wl;
+			sws[ce] = { {c1,ce} };
+		}
+		if (ce == c1) {
+			dis[cb] = wl;
+			sws[cb] = { {c1,cb} };
+		}
+	}
+	dis[c1] = 0;
+	flag[c1] = true;
+	int baseP;
+	for (int i = 0;i < vnum - 1;i++) {
+		int minw = INT_MAX;
+		for (int j = 0;j < vnum;j++) {
+			if (flag[j] == false && dis[j] < minw) {
+				minw = dis[j];
+				baseP = j;
+			}
+		}
+		flag[baseP] = true;
+		if (baseP == c2) break;
+		for (int j = 0;j < vnum;j++) {
+			int temp_sw = (wmat[baseP][j] == INT_MAX) ? INT_MAX : dis[baseP] + wmat[baseP][j];
+			if (temp_sw < dis[j]) {
+				dis[j] = temp_sw;
+				sws[j] = sws[baseP];
+				for (auto &s : sws[j]) {
+					s.push_back(j);
+				}
+			}
+			else if (temp_sw == dis[j]) {
+				for (auto s : sws[baseP]) {
+					s.push_back(j);
+					sws[j].push_back(s);
+				}
+			}
+		}
+	}
+
+	int maxrnum = 0;
+	for (int i = 0;i < sws[c2].size();i++) {
+		int temprnum = 0;
+		for (int j : sws[c2][i]) {
+			temprnum += crtnum[j];
+		}
+		maxrnum = (maxrnum < temprnum) ? temprnum : maxrnum;
+	}
+	cout << sws[c2].size() << " " << maxrnum << endl;
+	system("pause");
+	return 0;
+}
