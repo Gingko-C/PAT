@@ -1,0 +1,32 @@
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <iomanip>
+using std::fixed;
+using std::setprecision;
+#include <map>
+using std::map;
+int main() {
+	int k = 0, pnum, res_num = 0;
+	float pval;
+	map<int, float> m;
+	for (int i = 0;i < 2;i++) {
+		cin >> k;
+		for (int j = 0;j < k;j++) {
+			cin >> pnum >> pval;
+			m[pnum] += pval;
+		}
+	}
+	for (int i = 1000; i >= 0;i--) {
+		if (m[i] != 0) res_num++;
+	}
+	cout << res_num;
+	for (int i = 1000;i >= 0;i--) {
+		if (m[i] != 0) {
+			cout << " " << i << " " << fixed << setprecision(1) << m[i];
+		}
+	}
+	cout << endl;
+	return 0;
+}
