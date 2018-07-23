@@ -1,0 +1,23 @@
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <string>
+using std::string;
+int main() {
+	int a, b, c;
+	string sign = "";
+	cin >> a >> b;
+	c = a + b;
+	if (c < 0) {
+		sign = "-";
+		c = -c;
+	}
+	string s = std::to_string(c);
+	for (int i = s.size() - 3;i > 0;i-=3) {
+		s.insert(s.begin() + i, ',');
+	}
+	cout << sign << s << endl;
+	system("pause");
+	return 0;
+}
