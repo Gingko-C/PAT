@@ -1,0 +1,67 @@
+//AC!
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <vector>
+#include <map>
+#include <queue>
+using std::priority_queue;
+using std::map;
+using std::vector;
+
+struct Node {
+	bool visit = 0;
+	int d = 0;
+	int pi = -1;
+	bool child = 0;
+};
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	if(n==1) {
+	  cout<<1<<endl;
+	  return 0;
+	}
+	vector<Node> vn(n + 1);
+	map<int, vector<int>> f2c;
+	int fname, cnum, cname;
+	vector<int> dncnum(m + 1);
+	for (int i = 0; i < m; i++) {
+		cin >> fname >> cnum;
+		vn[fname].child = 1;
+		for (int j = 0; j < cnum; j++) {
+			cin >> cname;
+			vn[cname].pi = fname;
+			f2c[fname].push_back(cname);
+		}
+	}
+
+	priority_queue<int> pqi;
+	int max_d = 0;
+	pqi.push(1);
+	while (!pqi.empty()) {
+		int temp_node = pqi.top();
+		pqi.pop();
+		vn[temp_node].visit = 1;
+		for (auto &c : f2c[temp_node]) {
+			vn[c].d = vn[temp_node].d + 1;
+			vn[c].visit = 1;
+			if (vn[c].child == 0)
+				dncnum[vn[c].d]++;
+			else pqi.push(c);
+			max_d = (max_d < vn[c].d) ? vn[c].d : max_d;
+		}
+	}
+	bool flag_cout = false;
+	for (int i = 0; i <= max_d; i++) {
+		if (flag_cout == false) {
+			flag_cout = true;
+			cout << dncnum[i];
+		}
+		else cout << " " << dncnum[i];
+	}
+	cout << endl;
+	return 0;
+}
