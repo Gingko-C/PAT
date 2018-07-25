@@ -1,0 +1,33 @@
+//AC!
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <string>
+using std::string;
+#include <vector>
+using std::vector;
+#include <map>
+using std::map;
+
+int main() {
+	string s;
+	cin >> s;
+	int sum = 0;
+	string sum_str;
+	map<char, string> itowords{ {'0',"zero"},{'1',"one"},{'2',"two"},{'3',"three"},{'4',"four"},{'5',"five"},{'6',"six"},{'7',"seven"},{'8',"eight"},{'9',"nine"} };
+	for (auto c : s) {
+		sum += c - '0';
+	}
+	sum_str = std::to_string(sum);
+	bool flag_cout = 0;
+	for (auto c : sum_str) {
+		if (flag_cout == 0) {
+			flag_cout = 1;
+			cout << itowords[c];
+		}
+		else cout << " " << itowords[c];
+	}
+	cout << endl;
+	return 0;
+}
