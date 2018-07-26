@@ -1,0 +1,28 @@
+//AC!
+//示例有问题输出应为 T T W 37.97
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <vector>
+using std::vector;
+#include <iomanip>
+using std::fixed;
+using std::setprecision;
+
+int main() {
+	vector<vector<double>> wtl(3, vector<double>(3));
+	vector<int> buy;
+	vector<char> m{ 'W','T','L' };
+	for (int i = 0; i < 3; i++) {
+		int temp_max = 0;
+		for (int j = 0; j < 3; j++) {
+			cin >> wtl[i][j];
+			temp_max = (wtl[i][j] > wtl[i][temp_max]) ? j : temp_max;
+		}
+		buy.push_back(temp_max);
+	}
+	double max_income = 2 * (wtl[0][buy[0]] * wtl[1][buy[1]] * wtl[2][buy[2]] * 0.65 - 1);
+	cout << m[buy[0]] << " " << m[buy[1]] << " " << m[buy[2]] << " " << fixed << setprecision(2) << max_income << endl;
+	return 0;
+}
