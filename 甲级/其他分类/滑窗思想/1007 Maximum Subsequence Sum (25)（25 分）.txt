@@ -1,0 +1,40 @@
+//AC!
+//滑窗思想：
+//left首先放置在不为负的数，然后right往右移动，当[left,right]区间sum不为负，记录sum最大值和当时left\right。
+//当[left,right]区间sum为负,完成当前区间，left移动至下一个不为负的数重复如上步骤,当sum更大时进行记录。
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <vector>
+using std::vector;
+
+int main() {
+	int k;
+	cin >> k;
+	vector<int> sub(k);
+	int max_sum = -1;
+	int left, right;
+	int temp_sum = 0;
+	int temp_left, temp_right;
+	for (int i = 0; i < k; i++) {
+		cin >> sub[i];
+		temp_sum += sub[i];
+		temp_right = i;
+		if (temp_sum < 0) {
+			temp_left = i + 1;
+			temp_right = i + 1;
+			temp_sum = 0;
+		}
+		else {
+			if (temp_sum > max_sum) {
+				max_sum = temp_sum;
+				left = temp_left;
+				right = temp_right;
+			}
+		}
+	}
+	if (max_sum == -1) cout << 0 << " " << sub[0] << " " << sub[k - 1] << endl;
+	else cout << max_sum << " " << sub[left] << " " << sub[right] << endl;
+	return 0;
+}
