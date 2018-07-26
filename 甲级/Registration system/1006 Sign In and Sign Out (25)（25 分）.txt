@@ -1,0 +1,44 @@
+//AC!
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <vector>
+using std::vector;
+#include <string>
+using std::string;
+
+#define INT_MAX 100000000
+
+int stotime(string &st) {
+	int h = stoi(string(st.begin(), st.begin() + 2));
+	int m = stoi(string(st.begin() + 3, st.begin() + 5));
+	int s = stoi(string(st.begin() + 6, st.end()));
+	return h * 3600 + m * 60 + s;
+}
+int main() {
+	string unlock_id, lock_id;
+	string unlock_time, lock_time;
+	int unlock_time_int = INT_MAX, lock_time_int = -1;
+	string id, ltime, ultime;
+	int temp_time_int;
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		cin >> id >> ultime >> ltime;
+		temp_time_int = stotime(ultime);
+		if (temp_time_int < unlock_time_int) {
+			unlock_time_int = temp_time_int;
+			unlock_id = id;
+			unlock_time = ultime;
+		}
+		temp_time_int = stotime(ltime);
+		if (temp_time_int > lock_time_int) {
+			lock_time_int = temp_time_int;
+			lock_id = id;
+			lock_time = ltime;
+		}
+	}
+	cout << unlock_id << " " << lock_id << endl;
+	return 0;
+}
