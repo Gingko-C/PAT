@@ -1,0 +1,91 @@
+//AC!
+//排序问题 使用vector 配合自定义sort
+//本题注意处理并列排名的情况
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <string>
+using std::string;
+#include <vector>
+using std::vector;
+#include <map>
+using std::map;
+#include <algorithm>
+using std::sort;
+
+struct Stu
+{
+	string id;
+	vector<int> score;
+};
+
+int main() {
+	int rnum, cnum;
+	cin >> rnum >> cnum;
+	vector<Stu> stu(rnum);
+	map<string, vector<int>> rank;
+	map<int, char> table{ {0,'C'},{1,'M'},{2,'E'},{3,'A'} };
+	int score;
+	string id;
+	for (int i = 0; i < rnum; i++) {
+		int score_sum = 0;
+		cin >> stu[i].id;
+		for (int j = 0; j < 3; j++) {
+			cin >> score;
+			stu[i].score.push_back(score);
+			score_sum += score;
+		}
+		stu[i].score.push_back(score_sum / 3);
+	}
+	sort(stu.begin(), stu.end(), [](const Stu &l, const Stu &r) {return l.score[0] > r.score[0]; });
+	for (int i = 0; i < rnum; i++) {
+		int ord = i;
+		if (ord != 0) {
+			while (stu[ord].score[0] == stu[ord - 1].score[0]) {
+				ord--;
+				if (ord == 0) break;
+			}
+		}
+		rank[stu[i].id] = { ord + 1,0 };
+	}
+	sort(stu.begin(), stu.end(), [](const Stu &l, const Stu &r) {return l.score[1] > r.score[1]; });
+	for (int i = 0; i < rnum; i++) {
+		int ord = i;
+		if (ord != 0) {
+			while (stu[ord].score[1] == stu[ord - 1].score[1]) {
+				ord--;
+				if (ord == 0) break;
+			}
+		}
+		rank[stu[i].id] = (rank[stu[i].id][0] > ord + 1) ? vector<int>({ ord + 1, 1 }) : rank[stu[i].id];
+	}
+	sort(stu.begin(), stu.end(), [](const Stu &l, const Stu &r) {return l.score[2] > r.score[2]; });
+	for (int i = 0; i < rnum; i++) {
+		int ord = i;
+		if (ord != 0) {
+			while (stu[ord].score[2] == stu[ord - 1].score[2]) {
+				ord--;
+				if (ord == 0) break;
+			}
+		}
+		rank[stu[i].id] = (rank[stu[i].id][0] > ord + 1) ? vector<int>({ ord + 1, 2 }) : rank[stu[i].id];
+	}
+	sort(stu.begin(), stu.end(), [](const Stu &l, const Stu &r) {return l.score[3] > r.score[3]; });
+	for (int i = 0; i < rnum; i++) {
+		int ord = i;
+		if (ord != 0) {
+			while (stu[ord].score[3] == stu[ord - 1].score[3]) {
+				ord--;
+				if (ord == 0) break;
+			}
+		}
+		rank[stu[i].id] = (rank[stu[i].id][0] >= ord + 1) ? vector<int>({ ord + 1, 3 }) : rank[stu[i].id];
+	}
+	for (int i = 0; i < cnum; i++) {
+		cin >> id;
+		if (rank[id].empty()) cout << "N/A" << endl;
+		else cout << rank[id][0] << " " << table[rank[id][1]] << endl;
+	}
+	return 0;
+}
