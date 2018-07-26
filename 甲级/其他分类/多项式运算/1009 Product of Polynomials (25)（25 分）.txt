@@ -1,0 +1,56 @@
+//AC!
+//多项式题目，map存储多项式对应项的系数，vector存储存在的项。
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <vector>
+using std::vector;
+#include <map>
+using std::map;
+#include <iomanip>
+using std::fixed;
+using std::setprecision;
+
+int main() {
+	int n;
+	int max_p, max_p_1 = 0, max_p_2 = 0;
+	int pnum = 0;
+	map<int, double> m_1;
+	map<int, double> m_2;
+	cin >> n;
+	vector<int> m_1_p(n);
+	for (int i = 0; i < n; i++) {
+		cin >> m_1_p[i];
+		cin >> m_1[m_1_p[i]];
+		max_p_1 = (m_1_p[i] > max_p_1) ? m_1_p[i] : max_p_1;
+	}
+	cin >> n;
+	vector<int> m_2_p(n);
+	for (int i = 0; i < n; i++) {
+		cin >> m_2_p[i];
+		cin >> m_2[m_2_p[i]];
+		max_p_2 = (m_2_p[i] > max_p_2) ? m_2_p[i] : max_p_2;
+	}
+ 	max_p = max_p_1 + max_p_2;
+	vector<double> m(max_p + 1);
+	for (int i = 0; i < m_1_p.size(); i++) {
+		for (int j = 0; j < m_2_p.size(); j++) {
+			//if (m[m_1_p[i] + m_2_p[j]] == 0) pnum++; //在此处计数pnum会有一个用例不能通过，因为第一次计算后存在的多项式可能与后面的多项式抵消
+			m[m_1_p[i] + m_2_p[j]] += m_1[m_1_p[i]] * m_2[m_2_p[j]];
+		}
+	}
+	for (int i = m.size() - 1; i >= 0; i--) {
+		if (m[i] != 0) {
+			pnum++;
+		}
+	}
+	cout << pnum;
+	for (int i = m.size() - 1; i >= 0; i--) {
+		if (m[i] != 0) {
+			cout << " " << i << " " << fixed << setprecision(1) << m[i];
+		}
+	}
+	cout << endl;
+	return 0;
+}
