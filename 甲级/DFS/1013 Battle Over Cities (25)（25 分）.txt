@@ -1,4 +1,5 @@
 //AC!
+//使用DFS来遍历图
 //使用cout cin vector的话会超时。。。 所以看来还是用c风格的输入输出和数组稳一点
 #include <iostream>
 using std::cout;
