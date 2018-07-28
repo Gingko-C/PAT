@@ -1,0 +1,82 @@
+//AC!
+//注意审题呀！是17:00之前（<17:00）必须开始服务
+//主要考察queue队列的使用 不要用成priority_queue呀！
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <string>
+using std::string;
+#include <vector>
+using std::vector;
+#include <queue>
+using std::queue;
+#include <iomanip>
+using std::setw;
+using std::setfill;
+
+#define INT_MAX 100000000
+
+int n, m, k, q;
+
+std::pair<int,int> i2time(int t) {
+	int hh = t / 60;
+	int mm = t % 60;
+	return { hh,mm };
+}
+
+int findshortest(vector<queue<int>> &windows) {
+	int shortW = 0, shortT = INT_MAX;
+	for (int i = 0; i < n; i++) {
+		if (windows[i].empty()) return i;
+		if (windows[i].front() < shortT) {
+			shortT = windows[i].front();
+			shortW = i;
+		}
+	}
+	return shortW;
+}
+
+int main() {
+
+	scanf("%d%d%d%d", &n, &m, &k, &q);
+	vector<queue<int>> windows(n);
+	vector<int> win_time(n, 0);
+	int cus[1010];
+	int server_begin_time[1010];
+	int que[1010];
+	int que_c;
+	std::pair<int, int> time_h_m;
+	for (int i = 1; i <= k; i++) {
+		scanf("%d", &cus[i]);
+	}
+	int a = 1;
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			server_begin_time[a] = win_time[j];
+			win_time[j] += cus[a];
+			que[a] = win_time[j];
+			windows[j].push(que[a]);
+			a++;
+			if (a > k) break;
+		}
+	}
+	while (a<=k) {
+		int win = findshortest(windows);
+		windows[win].pop();
+		server_begin_time[a] = win_time[win];
+		win_time[win] += cus[a];
+		que[a] = win_time[win];
+		windows[win].push(que[a]);
+		a++;
+	}
+	for (int i = 1; i <= q; i++) {
+		scanf("%d", &que_c);
+		if (server_begin_time[que_c] >= 540) cout << "Sorry" << endl;
+		else {
+			time_h_m = i2time(que[que_c] + 480);
+			cout << setw(2) << setfill('0') << time_h_m.first << ":" << setw(2) << setfill('0') << time_h_m.second << endl;
+		}
+	}
+	return 0;
+}
