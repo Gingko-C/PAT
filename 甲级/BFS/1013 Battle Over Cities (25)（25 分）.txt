@@ -1,0 +1,61 @@
+//AC！
+//使用cout cin vector 会超时
+//bfs、dfs皆可
+#include <iostream>
+#include <queue>
+using std::priority_queue;
+
+int n, m, c;
+bool w[1010][1010];
+bool visit[1010];
+
+void dfs(int p) {
+	visit[p] = 1;
+	for (int i = 1; i <= n; i++) {
+		if (w[p][i] == 1 && visit[i] == 0) {
+			dfs(i);
+		}
+	}
+}
+
+
+void bfs(int p) {
+	priority_queue<int> pq;
+	pq.push(p);
+	visit[p] = 1;
+	while (!pq.empty()) {
+		int q = pq.top();
+		pq.pop();
+		for (int i = 0; i <= n; i++) {
+			if (w[q][i] == 1 && visit[i] == 0) {
+				visit[i] = 1;
+				pq.push(i);
+			}
+		}
+
+	}
+}
+int main() {
+	scanf("%d%d%d", &n, &m, &c);
+	int cityB, cityE,cityO;
+	for (int i = 0; i < m; i++) {
+		scanf("%d%d", &cityB, &cityE);
+		w[cityB][cityE] = 1;
+		w[cityE][cityB] = 1;
+	}
+	for (int i = 0; i < c; i++) {
+		std::fill(visit, visit + 1010, 0);
+		int area = 0;
+		scanf("%d", &cityO);
+		visit[cityO] = 1;
+		for (int j = 1; j <= n; j++) {
+			if (visit[j] == 0) {
+				bfs(j);
+				//dfs(j);  //深度优先搜索亦可
+				area++;
+			}
+		}
+		printf("%d\n", area - 1);
+	}
+	return 0;
+}
