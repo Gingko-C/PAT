@@ -1,0 +1,53 @@
+//AC!
+//素数相关问题，isPrime写法应熟练。
+//题目中N为一个十进制数，然后在相应进制下颠倒再转换回十进制得到N’，N和N’都为素数则输出YES
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <string>
+using std::string;
+#include <math.h>
+using std::pow;
+
+int toDec(string &num,int radix) {
+	int h = num.size() - 1;
+	int res = 0;
+	for (int i = 0; i <= h; i++) {
+		if ((num[i]-'0') >= radix) {
+			res = -1;
+			break;
+		}
+		res += (num[i] - '0')*pow(radix, h - i);
+	}
+	return res;
+}
+
+int toRadixR(int num,int radix) {
+	string res;
+	while (num != 0) {
+		res.push_back('0' + num % radix);
+		num /= radix;
+	}
+	return toDec(res, radix);
+}
+bool isPrime(int num) {
+	if (num <= 1) return false;
+	for (int i = 2; i <= sqrt(num); i++) {
+		if (num%i == 0) return false;
+	}
+	return true;
+}
+int main() {
+	int num;
+	int radix;
+	while (true) {
+		cin >> num;
+		if (num < 0) break;
+		cin >> radix;
+		if (isPrime(num) && isPrime(toRadixR(num,radix)))
+			printf("Yes\n");
+		else printf("No\n");
+	}
+	return 0;
+}
