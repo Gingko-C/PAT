@@ -1,0 +1,59 @@
+//AC!
+//n==0的情况需要单独考虑
+//本体使用 list作为数据结构更灵活
+#include <iostream>
+using std::cin;
+using std::cout;
+using std::endl;
+#include <algorithm>
+#include <list>
+using std::list;
+#include <math.h>
+
+list<int> dec2base(int i,int base) {
+	list<int> res;
+	while (i != 0) {
+		res.push_front(i%base);
+		i /= base;
+	}
+	return res;
+}
+
+int basenumR2dec(list<int> num, int base) {
+	int res = 0;
+	int i = 0;
+	while (!num.empty()) {
+		res += num.front() * std::pow(base, i++);
+		num.pop_front();
+	}
+	return res;
+}
+
+int main() {
+	int n, b;
+	cin >> n >> b;
+		if (n == 0) {
+		cout << "Yes" << endl;
+		cout << 0 << endl;
+		return 0;
+	}
+	list<int> n_base = dec2base(n, b);
+	if (n == basenumR2dec(n_base, b)) {
+		cout << "Yes" << endl;
+	}
+	else cout << "No" << endl;
+	bool flag_cout = 1;
+	while (!n_base.empty()) {
+		if (flag_cout == 1) {
+			flag_cout = 0;
+			cout << n_base.front();
+			n_base.pop_front();
+		}
+		else {
+			cout << " " << n_base.front();
+			n_base.pop_front();
+		}
+	}
+	cout << endl;
+	return 0;
+}
