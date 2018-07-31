@@ -1,0 +1,65 @@
+//AC!
+//排序 队列 数据计算问题
+//本题要注意的坑：只要到达时间在17:00之前就可以办理业务，哪怕16:59来了1000个人，也要办完下班，XD
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+#include <vector>
+using std::vector;
+#include <string>
+using std::string;
+#include <queue>
+using std::priority_queue;
+#include <algorithm>
+using std::sort;
+using std::min;
+using std::max;
+
+struct customer
+{
+	int atime, ptime, stime = 8 * 3600;
+};
+
+bool time_order(const customer &l, const customer &r) {
+	return l.stime + l.ptime * 60 > r.stime + r.ptime * 60;
+}
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	vector<customer> vc(n);
+	string time_str;
+	for (int i = 0; i < n; i++) {
+		cin >> time_str >> vc[i].ptime;
+		vc[i].atime = std::stoi(string(time_str.begin(), time_str.begin() + 2)) * 3600 
+			+ std::stoi(string(time_str.begin() + 3, time_str.begin() + 5)) * 60 
+			+ std::stoi(string(time_str.begin() + 6, time_str.end()));
+	}
+	sort(vc.begin(), vc.end(), [](const customer &l, const customer &r) {return l.atime < r.atime; });
+	int total_wait_time = 0, total_customer = 0;
+	int ord = 0;
+	priority_queue<customer, vector<customer>, decltype(time_order)*> pqc(time_order);
+	for (int i = 0; i < m && ord != n; i++) {
+		if (vc[ord].atime < 8 * 3600) {
+			total_wait_time += vc[ord].stime - vc[ord].atime;
+		}
+		else vc[ord].stime = vc[ord].atime;
+		pqc.push(vc[ord]);
+		ord++;
+		total_customer++;
+	}
+	while (ord != n) {
+		customer served_cus = pqc.top();
+		pqc.pop();
+		if (vc[ord].atime >= 17 * 3600) break;
+		vc[ord].stime = max(served_cus.stime + served_cus.ptime * 60,vc[ord].atime);
+		pqc.push(vc[ord]);
+		total_customer++;
+		int wait_time = vc[ord].stime - vc[ord].atime;
+		total_wait_time += wait_time;
+		ord++;
+	}
+	printf("%.1f\n", (float(total_wait_time) / 60.0) / float(total_customer));
+	return 0;
+}
