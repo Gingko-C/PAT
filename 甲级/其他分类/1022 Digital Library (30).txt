@@ -1,0 +1,113 @@
+//AC!
+//map的使用 
+//注意！getline在cin之后的第一次调用会获取到一个换行符（就是什么都没有）
+#include <vector>
+using std::vector;
+#include <string>
+using std::string;
+#include <iostream>
+using std::cin;
+using std::cout;
+using std::endl;
+#include <sstream>
+using std::istringstream;
+#include <algorithm>
+#include <map>
+using std::map;
+#include <set>
+using std::set;
+#include <iomanip>
+using std::setw;
+using std::setfill;
+int main() {
+	map<string, set<int>> title;
+	map<string, set<int>> author;
+	map<string, set<int>> key_words;
+	map<string, set<int>> publisher;
+	map<string, set<int>> publish_year;
+	int n;
+	cin >> n;
+	int book_id;
+	string temp_str;
+	for (int i = 0; i < n; i++) {
+		cin >> book_id;
+		std::getline(cin, temp_str);
+		std::getline(cin, temp_str);
+		title[temp_str].insert(book_id);
+		std::getline(cin, temp_str);
+		author[temp_str].insert(book_id);
+		std::getline(cin, temp_str);
+		istringstream sin(temp_str);
+		while (sin >> temp_str) {
+			key_words[temp_str].insert(book_id);
+		}
+		std::getline(cin, temp_str);
+		publisher[temp_str].insert(book_id);
+		std::getline(cin, temp_str);
+		publish_year[temp_str].insert(book_id);
+	}
+	int m;
+	cin >> m;
+	std::getline(cin, temp_str);
+	int type;
+	for (int i = 0; i < m; i++) {
+		std::getline(cin, temp_str);
+		cout << temp_str << endl;
+		type = temp_str[0] - '0';
+		temp_str = string(temp_str.begin() + 3, temp_str.end());
+		switch (type)
+		{
+		case(1):
+			if (title[temp_str].empty()) {
+				cout << "Not Found" << endl;
+			}
+			else {
+				for (auto b : title[temp_str]) {
+					cout << setw(7) << setfill('0') << b << endl;
+				}
+			}
+			break;
+		case(2):
+			if (author[temp_str].empty()) {
+				cout << "Not Found" << endl;
+			}
+			else {
+				for (auto b : author[temp_str]) {
+					cout << setw(7) << setfill('0') << b << endl;
+				}
+			}
+			break;
+		case(3):
+			if (key_words[temp_str].empty()) {
+				cout << "Not Found" << endl;
+			}
+			else {
+				for (auto b : key_words[temp_str]) {
+					cout << setw(7) << setfill('0') << b << endl;
+				}
+			}
+			break;
+		case(4):
+			if (publisher[temp_str].empty()) {
+				cout << "Not Found" << endl;
+			}
+			else {
+				for (auto b : publisher[temp_str]) {
+					cout << setw(7) << setfill('0') << b << endl;
+				}
+			}
+			break;
+		case(5):
+			if (publish_year[temp_str].empty()) {
+				cout << "Not Found" << endl;
+			}
+			else {
+				for (auto b : publish_year[temp_str]) {
+					cout << setw(7) << setfill('0') << b << endl;
+				}
+			}
+			break;
+		}
+	}
+	return 0;
+}
