@@ -1,0 +1,47 @@
+//AC!
+//简单的数学加法类问题
+//20位的正数只能用容器存放
+#include <vector>
+using std::vector;
+#include <string>
+using std::string;
+#include <iostream>
+using std::cin;
+using std::cout;
+using std::endl;
+#include <algorithm>
+#include <list>
+using std::list;
+
+int main() {
+	string n_str;
+	cin >> n_str;
+	list<int> n_v;
+	std::for_each(n_str.begin(), n_str.end(), [&n_v](char c) {n_v.push_back(c - '0'); });
+	list<int> n2_v;
+	int temp = 0;
+	int upnum = 0;
+	for (auto bb = n_v.rbegin(); bb != n_v.rend(); bb++) {
+		temp = (*bb) * 2 + upnum;
+		if (temp >= 10) {
+			temp = temp - 10;
+			upnum = 1;
+		}
+		else upnum = 0;
+		n2_v.push_front(temp);
+	}
+	if (upnum == 1) {
+		n2_v.push_front(1);
+	}
+	vector<int> n_vec(n_v.begin(), n_v.end());
+	vector<int> n2_vec(n2_v.begin(), n2_v.end());
+	std::sort(n_vec.begin(), n_vec.end());
+	std::sort(n2_vec.begin(), n2_vec.end());
+	if (n_vec == n2_vec) cout << "Yes" << endl;
+	else cout << "No" << endl;
+	for (auto bb = n2_v.begin(); bb != n2_v.end(); bb++) {
+		cout << *bb;
+	}
+	cout << endl;
+	return 0;
+}
