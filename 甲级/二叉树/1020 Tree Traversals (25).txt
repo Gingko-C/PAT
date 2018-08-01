@@ -1,0 +1,85 @@
+//AC!
+//二叉树遍历问题。
+//后序遍历序列中越靠近根节点的点，在树中也是越靠近根节点的。  
+//中序遍历中 1 在未使用过的点中在后序遍历序列中最靠近根节点 2 根据点在根节点的中序遍历序列中位置左右判断为左子结点还是右子结点 3 且中间未间隔上级（同级）结点
+#include <vector>
+using std::vector;
+#include <iostream>
+using std::cin;
+using std::cout;
+using std::endl;
+#include <algorithm>
+#include <map>
+using std::map;
+#include <queue>
+using std::queue;
+
+int main() {
+	int vnum;
+	cin >> vnum;
+	vector<int> postlist(vnum);
+	vector<int> inlist(vnum);
+	map<int, int>  postorder;
+	map<int, int> inorder;
+	vector<bool> postorder_visit(vnum, 0);
+	vector<bool> inorder_visit(vnum, 0);
+	for (int i = 0; i < vnum; i++) {
+		cin >> postlist[i];
+		postorder[postlist[i]] = i;
+	}
+	for (int i = 0; i < vnum; i++) {
+		cin >> inlist[i];
+		inorder[inlist[i]] = i;
+	}
+	queue<int> que;
+	postorder_visit[vnum - 1] = 1;
+	inorder_visit[inorder[postlist[vnum - 1]]] = 1;
+	int baseP;
+	que.push(postlist.back());
+	bool cout_flag = 1;
+	while (!que.empty()) {
+		baseP = que.front();
+		que.pop();
+		if (cout_flag == 1) {
+			cout_flag = 0;
+			cout << baseP;
+		}
+		else cout << " " << baseP;
+		for (int i = postorder[baseP] - 1; i >= 0; i--) {
+			if (postorder_visit[i] == 0 && inorder[postlist[i]] < inorder[baseP]) {
+				bool flag_v = 1;
+				for (int j = inorder[postlist[i]]; j < inorder[baseP]; j++) {
+					if (inorder_visit[j] == 1) {
+						flag_v = 0;
+						break;
+					}
+				}
+				if (flag_v == 1) {
+					postorder_visit[i] = 1;
+					inorder_visit[inorder[postlist[i]]] = 1;
+					que.push(postlist[i]);
+					break;
+				}
+			}
+		}
+		for (int i = postorder[baseP] - 1; i >= 0; i--) {
+			if (postorder_visit[i] == 0 && inorder[postlist[i]] > inorder[baseP]) {
+				bool flag_v = 1;
+				for (int j = inorder[postlist[i]]; j > inorder[baseP]; j--) {
+					if (inorder_visit[j] == 1) {
+						flag_v = 0;
+						break;
+					}
+				}
+				if (flag_v == 1) {
+					postorder_visit[i] = 1;
+					inorder_visit[inorder[postlist[i]]] = 1;
+					que.push(postlist[i]);
+					break;
+				}
+			}
+		}
+	}
+	cout << endl;
+	return 0;
+}
