@@ -1,0 +1,94 @@
+//AC!
+//树、BFS题目 使用DFS也是同理
+//先从一个结点bfs后保留最高高度拥有的结点们，然后从这些结点中的其中任意一个开始bfs得到最高高度的结点们，这两个结点集合的并集就是所求
+#include <vector>
+using std::vector;
+#include <iostream>
+using std::cin;
+using std::cout;
+using std::endl;
+#include <algorithm>
+#include <map>
+using std::map;
+#include <set>
+using std::set;
+#include <queue>
+using std::queue;
+map<int, vector<int>> mw;
+vector<bool> visit;
+vector<int> deep;
+set<int> bfs(int root) {
+	queue<int> que;
+	set<int> deepest_nodes;
+	int d = 1;
+	visit[root] = 1;
+	deep[root] = 1;
+	que.push(root);
+	while (!que.empty()) {
+		int baseP = que.front();
+		que.pop();
+		for (auto i : mw[baseP]) {
+			if (visit[i] == 0) {
+				visit[i] = 1;
+				que.push(i);
+				deep[i] = deep[baseP] + 1;
+				if (deep[i] > d) {
+					d = deep[i];
+					deepest_nodes = { i };
+				}
+				else if (deep[i] == d) {
+					deepest_nodes.insert(i);
+				}
+			}
+		}
+	}
+	return deepest_nodes;
+}
+int main() {
+	int n;
+	cin >> n;
+	if(n==1 || n==0) {
+	  cout<<n<<endl;
+	  return 0;
+	}
+	int bb, ee;
+	set<int> deepest;
+	set<int> deepest_2;
+	int components;
+	for (int i = 0; i < n - 1; i++) {
+		cin >> bb >> ee;
+		mw[bb].push_back(ee);
+		mw[ee].push_back(bb);
+	}
+
+	visit = vector<bool>(n + 1, 0);
+	deep = vector<int>(n + 1, 0);
+	components = 1;
+	deepest = bfs(1);
+	for (int j = 1; j <= n; j++) {
+		if (visit[j] == 0) {
+			bfs(j);
+			components++;
+		}
+	}
+	if (components == 1) {
+		visit = vector<bool>(n + 1, 0);
+		deep = vector<int>(n + 1, 0);
+		if (deepest.size() != 0) {
+			deepest_2 = bfs(*deepest.begin());
+		}
+		else deepest_2 = bfs(0);
+		for (auto bb = deepest_2.begin(); bb != deepest_2.end(); bb++) {
+			deepest.insert(*bb);
+		}
+	}
+	if (components != 1) {
+		cout << "Error: " << components << " components" << endl;
+	}
+	else {
+		for (auto i : deepest) {
+			cout << i << endl;
+		}
+	}
+	return 0;
+}
