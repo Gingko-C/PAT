@@ -1,0 +1,63 @@
+//AC!
+//数据存储，排序类问题
+//注意同分的情况下依照id升序排列
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+struct testee
+{
+	string id;
+	int score, total_rank = 0, location = 0, local_rank = 0;
+};
+
+bool order_testee(const testee &l, const testee &r) {
+	if (l.score > r.score)
+		return 1;
+	if (l.score == r.score)
+		return l.id < r.id;
+	return 0;
+}
+
+
+int main() {
+	int n, m, score, temp_rank = 1;
+	string id;
+	cin >> n;
+	vector<vector<testee>> vt(n);
+	for (int i = 0; i < n; i++) {
+		cin >> m;
+		for (int j = 0; j < m; j++) {
+			cin >> id >> score;
+			vt[i].push_back({ id, score });
+			vt[i].back().location = i+1;
+		}
+		sort(vt[i].begin(), vt[i].end(), order_testee);
+		for (int j = 0; j < m; j++) {
+			if (j == 0) {
+				temp_rank = 1;
+			}
+			else if (vt[i][j].score != vt[i][j - 1].score) {
+				temp_rank = j + 1;
+			}
+			vt[i][j].local_rank = temp_rank;
+		}
+	}
+	for (int i = 1; i < n; i++) {
+		vt[0].insert(vt[0].end(), vt[i].begin(), vt[i].end());
+	}
+	sort(vt[0].begin(), vt[0].end(), order_testee);
+	cout << vt[0].size() << endl;
+	for (int i = 0; i < vt[0].size(); i++) {
+		if (i == 0) {
+			temp_rank = 1;
+		}
+		else if (vt[0][i].score != vt[0][i - 1].score) {
+			temp_rank = i + 1;
+		}
+		vt[0][i].total_rank = temp_rank;
+		cout << vt[0][i].id << " " << vt[0][i].total_rank << " " << vt[0][i].location << " " << vt[0][i].local_rank << endl;
+	}
+	return 0;
+}
