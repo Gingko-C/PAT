@@ -1,0 +1,170 @@
+//未AC 24/30
+//这类题目非常的繁琐
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <queue>
+#include <iomanip>
+using namespace std;
+struct player
+{
+	int arr_time;
+	int play_time;
+	bool vip;
+	int ser_time;
+	int wait_time = 0;
+	bool served = 0;
+};
+struct table
+{
+	int id;
+	int free_time;
+	int play_num = 0;
+};
+string time2str(int time) {
+	string res = "";
+	res += to_string(time / 3600);
+	res += ':';
+	res += to_string((time % 3600) / 60);
+	res += ':';
+	res += to_string(time % 60);
+	return res;
+}
+vector<int> time2vec(int time) {
+	int hh = time / 3600;
+	int mm = (time % 3600) / 60;
+	int ss = time % 60;
+	return vector<int>{hh, mm, ss};
+}
+int toaroundmin(int t) {
+	int temp = t / 60;
+	if (t > temp * 60) return temp + 1;
+	return temp;
+}
+bool table_order(const table &l, const table &r) {
+	if (l.free_time > r.free_time) return 1;
+	if (l.free_time == r.free_time && l.id > r.id) return 1;
+	return 0;
+}
+int main() {
+	int player_num, time_temp, table_num, vip_table_num, order_no = 0;
+	string time_str;
+	cin >> player_num;
+	vector<player> players(player_num); 
+	for (int i = 0; i < player_num; i++) {
+		cin >> time_str;
+		time_temp = stoi(string(time_str.begin(), time_str.begin() + 2)) * 3600 + stoi(string(time_str.begin() + 3, time_str.begin() + 5)) * 60 + stoi(string(time_str.begin() + 6, time_str.end()));
+		players[i].arr_time = time_temp;
+		cin >> players[i].play_time >> players[i].vip;
+		players[i].play_time *= 60;
+	}
+	cin >> table_num >> vip_table_num;
+	vector<int> vip_tables(vip_table_num);
+	vector<int> table_play_time(table_num + 1);
+	priority_queue<table, vector<table>, decltype(table_order)*> tables(table_order);
+	for (int i = 0; i < vip_table_num; i++) {
+		cin >> vip_tables[i];
+	}
+	for (int i = 1; i <= table_num; i++) {
+		tables.push({ i,8 * 3600 });
+	}
+	sort(players.begin(), players.end(), [](const player &l, const player &r) {return l.arr_time < r.arr_time; });
+	for (int i = 0; i < player_num; i++) {
+		while (tables.top().free_time < players[i].arr_time) {
+			table renew_table = tables.top();
+			tables.pop();
+			renew_table.free_time = players[i].arr_time;
+			tables.push(renew_table);
+		}
+		if (find(vip_tables.begin(), vip_tables.end(), tables.top().id) != vip_tables.end()) {
+			int j = i;
+			if (players[j].arr_time < tables.top().free_time){
+				while (players[j].arr_time < tables.top().free_time) {
+					if (players[j].vip == 1 && players[j].served == 0) {
+						players[j].ser_time = tables.top().free_time;
+						players[j].served = 1;
+						players[j].wait_time = players[j].ser_time - players[j].arr_time;
+						table renew_table = tables.top();
+						tables.pop();
+						renew_table.free_time = players[j].ser_time + players[j].play_time;
+						if (players[j].ser_time < 21 * 3600)
+							renew_table.play_num++;
+						tables.push(renew_table);
+						break;
+					}
+					j++;
+				}
+				i--;
+				continue;
+			}
+		}
+		if (players[i].served == 1) continue;
+		if (players[i].vip == 1) {
+			vector<table> temp_tables;
+			while (tables.top().free_time <= players[i].arr_time) {
+				if (find(vip_tables.begin(), vip_tables.end(), tables.top().id) == vip_tables.end()) {
+					temp_tables.push_back(tables.top());
+					tables.pop();
+				}
+				else {
+					players[i].ser_time = players[i].arr_time;
+					temp_tables.push_back({ tables.top().id,players[i].arr_time + players[i].play_time,(players[i].ser_time < 21 * 3600)?tables.top().play_num + 1: tables.top().play_num });
+					tables.pop();
+					players[i].served = 1;
+					break;
+				}
+			}
+			for (auto i : temp_tables) {
+				tables.push(i);
+			}
+			if (players[i].served == 1) continue;
+		}
+		if (tables.top().free_time <= players[i].arr_time) {
+			players[i].ser_time = players[i].arr_time;
+			table renew_table = tables.top();
+			tables.pop();
+			renew_table.free_time = players[i].ser_time + players[i].play_time;
+			if (players[i].ser_time < 21 * 3600)
+				renew_table.play_num++;
+			tables.push(renew_table);
+		}
+		else if (tables.top().free_time > players[i].arr_time) {
+			players[i].ser_time = tables.top().free_time;
+			players[i].wait_time = players[i].ser_time - players[i].arr_time;
+			table renew_table = tables.top();
+			tables.pop();
+			renew_table.free_time = players[i].ser_time + players[i].play_time;
+			if (players[i].ser_time < 21 * 3600)
+				renew_table.play_num++;
+			tables.push(renew_table);
+		}
+	}
+	for (int i = 1; i <= table_num; i++) {
+		table_play_time[tables.top().id] = tables.top().play_num;
+		tables.pop();
+	}
+	sort(players.begin(), players.end(), [](const player &l, const player &r)->bool {
+		if (l.ser_time < r.ser_time) return 1;
+		if (l.ser_time == r.ser_time && l.wait_time < r.wait_time) return 1;
+		return 0; });
+	for (auto i : players) {
+		if (i.ser_time >= 21 * 3600) break;
+		vector<int> tempvec = time2vec(i.arr_time);
+		cout << setw(2) << setfill('0') << tempvec[0] << ":" << setw(2) << setfill('0') << tempvec[1] << ":" << setw(2) << setfill('0') << tempvec[2] << " ";
+		tempvec = time2vec(i.ser_time);
+		cout << setw(2) << setfill('0') << tempvec[0] << ":" << setw(2) << setfill('0') << tempvec[1] << ":" << setw(2) << setfill('0') << tempvec[2] << " ";
+		cout << toaroundmin(i.wait_time) << endl;
+	}
+	bool flag_cout = 1;
+	for (int i = 1; i <= table_num;i++) {
+		if (flag_cout == 1) {
+			flag_cout = 0;
+			cout << table_play_time[i];
+		}
+		else cout << " " << table_play_time[i];
+	}
+	cout << endl;
+	system("pause");
+	return 0;
+}
