@@ -1,0 +1,35 @@
+//AC!
+//进制转换问题
+//注意输出中每个13进制数都应该是两位数
+#include <vector>
+#include <iostream>
+#include <list>
+using namespace std;
+list<char> res;
+vector<char> table = { '0','1','2','3','4','5','6','7','8','9','A','B','C' };
+void dec213(int n) {
+	int flag = 0;
+	while (n != 0) {
+		res.push_front(table[n % 13]);
+		flag++;
+		n /= 13;
+	}
+	while (flag != 2) {
+		res.push_front('0');
+		flag++;
+	}
+}
+int main() {
+	int r, b, g;
+	cin >> r >> b >> g;
+	string r_13="", b_13="", g_13="";
+	dec213(g);
+	dec213(b);
+	dec213(r);
+	res.push_front('#');
+	for (auto i : res) {
+		cout << i;
+	}
+	cout << endl;
+	return 0;
+}
