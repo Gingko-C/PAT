@@ -1,0 +1,47 @@
+//15/25 最后一个节点内存超限
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <climits>
+#include <queue>
+using namespace std;
+
+int main() {
+	queue<int> que_1;
+	queue<int> que_2;
+	int n1, n2;
+	long int temp;
+	scanf("%d", &n1);
+	int i = 0;
+	while (i < n1) {
+		scanf("%ld", &temp);
+		if (temp > INT_MAX) temp = INT_MAX;
+		else if (temp < -INT_MAX) temp = -INT_MAX;
+		que_1.push(temp);
+		i++;
+	}
+	scanf("%d", &n2);
+	while (i < n1 + n2) {
+		scanf("%ld", &temp);
+		if (temp > INT_MAX) temp = INT_MAX;
+		else if (temp < -INT_MAX) temp = -INT_MAX;
+		que_2.push(temp);
+		i++;
+	}
+	for (int i = 0; i < (n1 + n2 - 1) / 2; i++) {
+		if (que_1.empty()) {
+			que_2.pop();
+			continue;
+		}
+		if (que_2.empty()) {
+			que_1.pop();
+			continue;
+		}
+		if (que_1.front() < que_2.front()) que_1.pop();
+		else que_2.pop();
+	}
+	if (que_1.empty()) cout << que_2.front() << endl;
+	else if (que_2.empty()) cout << que_1.front() << endl;
+	else cout << min(que_1.front(), que_2.front()) << endl;
+	return 0;
+}
