@@ -1,0 +1,44 @@
+//AC
+//排序问题
+//使用c形式的输入输出方能保证不超时
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+
+struct record
+{
+	int id;
+	char name[10];
+	int score;
+};
+
+int n, c;
+
+int cmp1(record a, record b) {
+	if (c == 1) {
+		return a.id < b.id;
+	}
+	else if (c == 2) {
+		if (strcmp(a.name, b.name) == 0) return a.id < b.id;
+		return strcmp(a.name, b.name) < 0;
+	}
+	else {
+		if (a.score == b.score) return a.id < b.id;
+		return a.score < b.score;
+	}
+}
+
+int main() {
+	scanf("%d%d", &n, &c);
+	record records[100010];
+	for (int i = 0; i < n; i++) {
+		scanf("%d %s %d", &records[i].id, records[i].name, &records[i].score);
+	}
+	sort(records, records + n, cmp1);
+	for (int i = 0; i < n; i++) {
+		printf("%06d %s %d\n", records[i].id, records[i].name, records[i].score);
+	}
+	return 0;
+}
