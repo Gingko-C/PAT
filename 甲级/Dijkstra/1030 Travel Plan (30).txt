@@ -1,0 +1,68 @@
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <climits>
+using namespace std;
+
+int main() {
+	int vnum, wnum, st, dest, bb, ee, baseP;
+	cin >> vnum >> wnum >> st >> dest;
+	vector<int> dis(vnum, INT_MAX);
+	vector<int> dis_cost(vnum, INT_MAX);
+	vector<int> visit(vnum, 0);
+	vector<vector<int>> wcost(vnum, vector<int>(vnum, INT_MAX));
+	vector<vector<int>> wlength(vnum, vector<int>(vnum, INT_MAX));
+	vector<vector<int>> sws(vnum);
+	for (int i = 0; i < wnum; i++) {
+		cin >> bb >> ee;
+		cin >> wlength[bb][ee] >> wcost[bb][ee];
+		wlength[ee][bb] = wlength[bb][ee];
+		wcost[ee][bb] = wcost[bb][ee];
+		if (bb == st) {  //此处应该是判断是否等于起点 而不是是否等于0点 容易混淆！
+			dis[ee] = wlength[bb][ee];
+			dis_cost[ee] = wcost[bb][ee];
+			sws[ee] = { bb,ee };
+		}
+		if (ee == st) {
+			dis[bb] = wlength[ee][bb];
+			dis_cost[bb] = wcost[ee][bb];
+			sws[bb] = { ee,bb };
+		}
+	}
+	dis[st] = 0;
+	visit[st] = 1;
+	for (int i = 0; i < vnum; i++) {  //循环条件只要大于vnum-1次就可以，遍历完成后会根据下方中断条件跳出
+		baseP = -1;
+		int temp_min = INT_MAX;
+		for (int j = 0; j < vnum; j++) {
+			if (visit[j] == 0 && dis[j] < temp_min) {
+				temp_min = dis[j];
+				baseP = j;
+			}
+		}
+		if (baseP == -1) break; //注意！ 必须有中断条件 防止当剩余点全为INT_MAX时发生死循环。
+		visit[baseP] = 1;
+		for (int j = 0; j < vnum; j++) {
+			int temp_wlength = (wlength[baseP][j] == INT_MAX) ? INT_MAX : dis[baseP] + wlength[baseP][j];
+			if (temp_wlength < dis[j]) {
+				dis[j] = temp_wlength;
+				dis_cost[j] = dis_cost[baseP] + wcost[baseP][j];
+				sws[j] = sws[baseP];
+				sws[j].push_back(j);
+			}
+			else if (temp_wlength == dis[j]) {
+				int temp_wcost = (wcost[baseP][j] == INT_MAX) ? INT_MAX : dis_cost[baseP] + wcost[baseP][j];
+				if (temp_wcost < dis_cost[j]) {
+					dis_cost[j] = temp_wcost;
+					sws[j] = sws[baseP];
+					sws[j].push_back(j);
+				}
+			}
+		}
+	}
+	for (auto v : sws[dest]) {
+		cout << v << " ";
+	}
+	cout << dis[dest] << " " << dis_cost[dest] << endl;
+	return 0;
+}
