@@ -1,0 +1,26 @@
+//AC
+//简单的打印绘图题目
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main() {
+	string in_put;
+	cin >> in_put;
+	int sz = in_put.size();
+	int high = (sz + 2) / 3;
+	int width = sz - high * 2 + 2;
+	for (int i = 0; i < high - 1; i++) {
+		cout << in_put[i];
+		for (int j = 0; j < width - 2; j++) {
+			cout << " ";
+		}
+		cout << in_put[sz - i - 1] << endl;
+	}
+	for (int i = high - 1; i <= sz - high; i++) {
+		cout << in_put[i];
+	}
+	cout << endl;
+	return 0;
+}
