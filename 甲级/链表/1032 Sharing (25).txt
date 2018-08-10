@@ -1,0 +1,66 @@
+//AC
+//方法1
+//思路：先遍历链表1，并置标志位为true，然后遍历链表2，若遇到标志位为true则输出该结点地址。
+//值得注意的：这种读取大量数据的题，使用cin浪费大量时间，导致测试点10超时，只能使用scanf
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int s1_addr, s2_addr, vnum;
+	vector<int> node2next(100000);
+	vector<bool> flag(100000, false);
+	scanf("%d%d%d", &s1_addr, &s2_addr, &vnum);
+	int this_node, next_node;
+	char data;
+	for (int i = 0; i < vnum; i++) {
+		scanf("%d %c %d", &this_node, &data, &next_node);
+		node2next[this_node] = next_node;
+	}
+	for (int i = s1_addr; i != -1; i = node2next[i]) {
+		flag[i] = true;
+	}
+	for (int i = s2_addr; i != -1; i = node2next[i]) {
+		if (flag[i] == true) {
+			printf("%05d\n", i);
+			return 0;
+		}
+	}
+	printf("-1\n");
+	return 0;
+}
+
+
+//方法2，PAT未能AC，nowcoder能够AC
+//思路，从next为-1的尾结点向回遍历，当出现分叉就输出分叉点。
+//（但是当节点数据中出现非两条有效链表之外的干扰数据时就会出现错误）
+//仅留作参考，应使用方法1
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <iomanip>
+#include <map>
+using namespace std;
+
+int main() {
+	int s1_addr, s2_addr, vnum, res = -1;
+	map<int, vector<int>> f2c;
+	cin >> s1_addr >> s2_addr >> vnum;
+	int cnode, fnode;
+	char data;
+	for (int i = 0; i < vnum; i++) {
+		cin >> cnode >> data >> fnode;
+		f2c[fnode].push_back(cnode);
+	}
+	int node = -1;
+	while (f2c[node].size() == 1) {
+		node = f2c[node][0];
+	}
+	if (f2c[node].size() == 2) {
+		res = node;
+	}
+	if (res == -1) cout << -1 << endl;
+	else cout << setw(5) << setfill('0') << res << endl;
+	return 0;
+}
