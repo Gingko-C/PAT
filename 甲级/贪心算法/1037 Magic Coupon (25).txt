@@ -1,0 +1,37 @@
+//AC
+//贪心算法 用最大的整数相乘，用最小的负数相乘
+//券和商品都不需要用尽。
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int nc, np;
+	int cs[100010];
+	int cs_use[100010];
+	int ps[100010];
+	int ps_use[100010];
+	scanf("%d", &nc);
+	for (int i = 0; i < nc; i++) {
+		scanf("%d", &cs[i]);
+	}
+	scanf("%d", &np);
+	for (int i = 0; i < np; i++) {
+		scanf("%d", &ps[i]);
+	}
+	sort(cs, cs + nc);
+	sort(ps, ps + np);
+	int dest = 0;
+	int max_back = 0;
+	while (cs[dest] < 0 && ps[dest] < 0) {
+		max_back += cs[dest] * ps[dest];
+		dest++;
+	}
+	dest = 1;
+	while (cs[nc - dest] > 0 && ps[np - dest] > 0) {
+		max_back += cs[nc - dest] * ps[np - dest];
+		dest++;
+	}
+	cout << max_back << endl;
+	return 0;
+}
