@@ -1,0 +1,101 @@
+//AC
+//使用贪心算法
+//0.寻找比自己距离远的，到能够到达的最大距离之间的加油站，看他们的油价。如果找到了更低价格的油价，就加油到刚好能到达那个加油站的距离的油，然后去那个更低价格的加油站（有更低的我一分都不想多花在别的距离上，只加到刚好满足更低价格的加油站的距离就行，那样以后的路程我就可以以更低的价格行驶啦）
+//1.如果找不到更低的，就找尽可能低的油价的加油站，在当前加油站加满油之后过去。因为想要让路程上使用的尽可能是低价的油，既然没有比当前更低价格的了，就让油箱加到最大值，这样能保证利益最大化，保证最大的距离使用的是便宜的油。
+//自己添加终点距离处的价格为0的加油点，这样保证到终点时油会刚好用完。
+//坑点：如果没有起点处的加油站，则直接输出最多行驶0。
+//坑点：相同距离上可能存在不止一个加油站，应选取价格最低的那一个。
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <iomanip>
+#include <climits>
+using namespace std;
+
+struct station
+{
+	double price;
+	int distance;
+	bool flag = true;
+};
+
+int main() {
+	double t_max, d_pg;
+	int dt,snum, st = 0;
+	cin >> t_max >> dt >> d_pg >> snum;
+	int d_max = t_max * d_pg;
+	vector<station> stations(snum + 1);
+	for (int i = 0; i < snum; i++) {
+		cin >> stations[i].price >> stations[i].distance;
+	}
+	stations[snum] = { 0.0,dt };
+	sort(stations.begin(), stations.end(), [](const station &a, const station &b) {return a.distance < b.distance; });
+	int temp_i = 0;
+	for (int i = 1; i <= snum;i++) {
+		if (stations[i].distance == stations[temp_i].distance) {
+			if (stations[i].price <= stations[temp_i].price) {
+				stations[temp_i].flag = false;
+				temp_i = i;
+			}
+			if (stations[i].price > stations[temp_i].price) {
+				stations[i].flag = false;
+			}
+		}
+		else {
+			temp_i = i;
+		}
+	}
+	int i = 0;
+	for (int j = 0; j <= snum; j++) {
+		if (stations[j].flag == true && stations[j].distance == 0) {
+			st = j;
+			break;
+		}
+	}
+	if(stations[st].distance!=0){
+	  	cout << "The maximum travel distance = ";
+			cout << fixed << setprecision(2) << (double)0 << endl;
+			return 0;
+	}
+	for (int j = 1; j <= snum; j++) {
+		if (stations[j].flag == true && stations[j].distance != 0) {
+			i = j;
+			break;
+		}
+	}
+	double rest_gas = 0.0;
+	double cost = 0.0;
+	while (stations[st].distance < dt) {
+		double min_price = INT_MAX;
+		int temp_st = 0;
+		while (stations[i].distance > stations[st].distance && stations[i].distance <= stations[st].distance + d_max) {
+			if (stations[i].flag == true && stations[i].price < min_price) {
+				min_price = stations[i].price;
+				temp_st = i;
+				if (stations[i].price <= stations[st].price) {
+					break;
+				}
+			}
+			i++;
+			if (i > snum) break;
+		}
+		if (temp_st == 0) {
+			cout << "The maximum travel distance = ";
+			cout << fixed << setprecision(2) << (double)(stations[st].distance + d_max) << endl;
+			return 0;
+		}
+		i = temp_st + 1;
+		double need_gas = (stations[temp_st].distance - stations[st].distance) / d_pg;
+		if (stations[st].price > stations[temp_st].price) {
+			cost += (need_gas - rest_gas)*stations[st].price;
+			rest_gas = 0;
+		}
+		else {
+			cost += (t_max - rest_gas) * stations[st].price;
+			rest_gas = t_max - need_gas;
+		}
+		st = temp_st;
+	}
+	cout << fixed << setprecision(2) << cost << endl;
+	return 0;
+}
