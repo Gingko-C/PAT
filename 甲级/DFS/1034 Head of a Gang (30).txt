@@ -1,0 +1,72 @@
+//AC
+//这道题主要思路是，组成树并使用DFS
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+using namespace std;
+
+map<string, vector<string>> relation;
+map<string, int> p_total_weight;
+map<string, int> visit;
+int gang_mnum = 0;
+int max_w = 0;
+int total_w = 0;
+string head;
+
+void related(vector<string> &p) {
+	for (auto i : p) {
+		if (visit[i] == 0) {
+			visit[i] = 1;
+			gang_mnum++;
+			total_w += p_total_weight[i];
+			if (p_total_weight[i] > max_w) {
+				max_w = p_total_weight[i];
+				head = i;
+			}
+			related(relation[i]);
+		}
+	}
+}
+
+int main() {
+	int vnum, thres, time;
+	string name1, name2;
+	cin >> vnum >> thres;
+	map<string, int> res;
+	map<pair<string, string>, int> p2p_weight;
+	for (int i = 0; i < vnum; i++) {
+		cin >> name1 >> name2 >> time;
+		relation[name1].push_back(name2);
+		relation[name2].push_back(name1);
+		p2p_weight[{name1, name2}] += time;
+		p2p_weight[{name2, name1}] += time;
+	}
+	for (auto i : p2p_weight) {
+		p_total_weight[i.first.first] += i.second;
+	}
+	for (auto i : relation) {
+		int gnum = 0;
+		max_w = 0;
+		total_w = 0;
+		gang_mnum = 0;
+		if (visit[i.first] == 0) {
+			visit[i.first] = 1;
+			gang_mnum++;
+			max_w = p_total_weight[i.first];
+			head = i.first;
+			total_w += p_total_weight[i.first];
+			related(i.second);
+		}
+		if (gang_mnum > 2 && total_w > thres * 2) {
+			gnum++;
+			res[head] = gang_mnum;
+		}
+	}
+	cout << res.size() << endl;
+	for (auto i : res) {
+		cout << i.first << " " << i.second << endl;
+	}
+	return 0;
+}
