@@ -1,0 +1,53 @@
+//AC
+//简单的数据处理比较题目
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+struct student {
+	string name;
+	string id;
+	int grade;
+};
+int main() {
+	int snum;
+	string name, id;
+	char gender;
+	int grade;
+	student f_stu_h, m_stu_l;
+	f_stu_h.grade = -1;
+	m_stu_l.grade = 101;
+	cin >> snum;
+	for (int i = 0; i < snum; i++) {
+		cin >> name >> gender >> id >> grade;
+		if (gender == 'F') {
+			if (grade > f_stu_h.grade) {
+				f_stu_h.name = name;
+				f_stu_h.id = id;
+				f_stu_h.grade = grade;
+			}
+		}
+		if (gender == 'M') {
+			if (grade < m_stu_l.grade) {
+				m_stu_l.name = name;
+				m_stu_l.id = id;
+				m_stu_l.grade = grade;
+			}
+		}
+	}
+	bool na = false;
+	if (f_stu_h.grade == -1) {
+		cout << "Absent" << endl;
+		na = true;
+	}
+	else cout << f_stu_h.name << " " << f_stu_h.id << endl;
+	if (m_stu_l.grade == 101) {
+		cout << "Absent" << endl;
+		na = true;
+	}
+	else cout << m_stu_l.name << " " << m_stu_l.id << endl;
+	if (na) cout << "NA" << endl;
+	else cout << f_stu_h.grade - m_stu_l.grade << endl;
+	return 0;
+}
