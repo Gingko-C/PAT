@@ -1,0 +1,32 @@
+//nowcoder AC/ PTA最后一个结点超时
+//数据处理问题，如果想不超时，应该不能使用map和set的组合
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+#include <set>
+using namespace std;
+
+int main() {
+	map<string, set<int>> stu_courses;
+	int qnum, cnum, cno, snum;
+	char name[5];
+	scanf("%d%d", &qnum, &cnum);
+	for (int i = 0; i < cnum; i++) {
+		scanf("%d%d", &cno, &snum);
+		for (int j = 0; j < snum; j++) {
+			scanf("%s", name);
+			stu_courses[name].insert(cno);
+		}
+	}
+	for (int i = 0; i < qnum; i++) {
+		scanf("%s", name);
+		printf("%s %d", name, stu_courses[name].size());
+		for (auto j : stu_courses[name]) {
+			printf(" %d", j);
+		}
+		printf("\n");
+	}
+	return 0;
+}
