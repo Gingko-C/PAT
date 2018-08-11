@@ -1,0 +1,31 @@
+//AC
+//使用a+b < b+a 进行排序是这道题的核心思想
+//坑点：当输入中包含一个0000（类似这样的纯零），而如果我们只处理了排序后第一个数的前置零问题，那么将产生错误。
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main() {
+	int nnum;
+	cin >> nnum;
+	vector<string> nums(nnum);
+	for (int i = 0; i < nnum; i++) {
+		cin >> nums[i];
+	}
+	sort(nums.begin(), nums.end(), [](const string &a, const string &b) {return a + b < b + a; });
+  string res;
+	for (int i = 0; i < nnum; i++) {
+		res += nums[i];
+	}
+	while (res.front() == '0') {
+		res.erase(res.begin());
+		if(res.empty()) {
+		  cout<<0<<endl;
+		  return 0;
+		}
+	}
+	cout << res << endl;
+	return 0;
+}
