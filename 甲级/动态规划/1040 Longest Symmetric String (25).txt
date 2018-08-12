@@ -1,0 +1,38 @@
+//AC
+//最长回文字符串，经典动态规划问题
+//初始化阶段：isSym[i][i] = 1;if (str[i] == str[i + 1]) isSym[i][i + 1] = 1;
+//自下而上的动态规划if (str[i] == str[i + n]) isSym[i][i + n] = isSym[i + 1][i + n - 1];
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main() {
+	string str;
+	getline(cin, str);
+	int sz = str.size();
+	int max_length = 0;
+	vector<vector<bool>> isSym(sz, vector<bool>(sz, 0));
+	for (int i = 0; i < sz; i++) {
+		isSym[i][i] = 1;
+		if (max_length < 1) max_length = 1;
+	}
+	for (int i = 0; i < sz - 1; i++) {
+		if (str[i] == str[i + 1]) {
+			isSym[i][i + 1] = 1;
+			if (max_length < 2) max_length = 2;
+		}
+		isSym[i][i + 1] = (str[i] == str[i + 1]) ? 1 : 0;
+	}
+	for (int n = 2; n < sz; n++) {
+		for (int i = 0; i < sz - n; i++) {
+			if (str[i] == str[i + n]) {
+				isSym[i][i + n] = isSym[i + 1][i + n - 1];
+			}
+			if (isSym[i][i + n] == 1 && max_length < n + 1) max_length = n + 1;
+		}
+	}
+	cout << max_length << endl;
+	return 0;
+}
