@@ -1,0 +1,54 @@
+//AC
+//二叉搜索树，函数trans2post很重要，由前序转化为后序，根据二叉搜索树root结点左小右大的特性。
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+vector<int> pre, post;
+bool isMirror = 0;
+void trans2post(int root,int tail) {
+  if (root > tail) return;
+	int i = root + 1;
+	int j = tail;
+	if (!isMirror) {
+		while (i <= tail && pre[i] < pre[root]) i++;
+		while (j > root && pre[j] >= pre[root]) j--;
+	}
+	else {
+		while (i <= tail && pre[i] >= pre[root]) i++;
+		while (j > root && pre[j] < pre[root]) j--;
+	}
+	if (i - j != 1) return;
+	trans2post(root + 1, j);
+	trans2post(i, tail);
+	post.push_back(pre[root]);
+}
+int main() {
+	int n;
+	cin >> n;
+	pre.resize(n);
+	for (int i = 0; i < n; i++) {
+		cin >> pre[i];
+	}
+	trans2post(0, n - 1);
+	if (post.size() != n) {
+		isMirror = 1;
+		post.clear();
+		trans2post(0, n - 1);
+		if (post.size() != n) {
+			cout << "NO" << endl;
+			return 0;
+		}
+	}
+	cout << "YES" << endl;
+	bool cout_flag = 0;
+	for (int i = 0; i < n; i++) {
+		if (cout_flag == 0) {
+			cout_flag = 1;
+			cout << post[i];
+		}
+		else cout << " " << post[i];
+	}
+	cout << endl;
+	return 0;
+}
