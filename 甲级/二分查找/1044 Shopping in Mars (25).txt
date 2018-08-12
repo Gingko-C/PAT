@@ -1,0 +1,55 @@
+//AC
+//连续和 使用 sum[j]-sum[i-1] 表示i-j的和
+//二分法查找
+//10^5数量级输入输出不能使用cin cout会超时
+
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <climits>
+using namespace std;
+
+int n, amount;
+vector<int> sum;
+int overpay = INT_MAX;
+vector<pair<int, int>> res;
+void findpayway(int i) {
+	int left = i, right = n;
+	int mid;
+	int temp_pay = 0;
+	while (left < right) {
+		mid = (left + right) / 2;
+		if (sum[mid] - sum[i - 1] < amount) {
+			left = mid + 1;
+		}
+		else if (sum[mid] - sum[i - 1] >= amount) {
+			right = mid;
+		}
+	}
+	temp_pay = sum[right] - sum[i - 1];
+	if (temp_pay - amount >= 0) {
+		if (temp_pay - amount < overpay) {
+			res = { {i,right} };
+			overpay = temp_pay - amount;
+		}
+		else if (temp_pay - amount == overpay) {
+			res.push_back({ i,right });
+		}
+	}
+}
+
+int main() {
+	scanf("%d%d", &n, &amount);
+	sum.resize(n + 1);
+	for (int i = 1; i <= n; i++) {
+		scanf("%d", &sum[i]);
+		sum[i] += sum[i - 1];
+	}
+	for (int i = 1; i <= n; i++) {
+		findpayway(i);
+	}
+	for(auto i:res){
+		printf("%d-%d\n", i.first, i.second);
+	}
+	return 0;
+}
