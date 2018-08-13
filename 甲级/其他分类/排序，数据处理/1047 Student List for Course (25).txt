@@ -1,0 +1,33 @@
+//AC
+//存储int比存储string节省大量空间
+//相比set的自动排序，vector+sort能省下很多时间
+
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main() {
+	int n, m, l, temp;
+	char name[5];
+	scanf("%d%d", &n, &m);
+	vector<string> names(n);
+	vector<int> course2ste[2510];
+	for (int i = 0; i < n; i++) {
+		scanf("%s %d", name, &l);
+		names[i] = name;
+		for (int j = 0; j < l; j++) {
+			scanf("%d", &temp);
+			course2ste[temp].push_back(i);
+		}
+	}
+	for (int i = 1; i <= m; i++) {
+		sort(course2ste[i].begin(), course2ste[i].end(), [&names](int a, int b) { return names[a] < names[b]; });
+		printf("%d %d\n", i, course2ste[i].size());
+		for (auto s : course2ste[i]) {
+			printf("%s\n", names[s].c_str());
+		}
+	}
+	return 0;
+}
