@@ -1,0 +1,25 @@
+//AC
+//使用sum[0~j]-sum[0~i]=sum[i~j]的思想
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int n, m, temp, bb, ee;
+	scanf("%d", &n);
+	vector<int> lsum(n + 2);
+	for (int i = 2; i <= n + 1; i++) {
+		scanf("%d", &temp);
+		lsum[i] = lsum[i - 1] + temp;
+	}
+	scanf("%d", &m);
+	for (int i = 0; i < m; i++) {
+		scanf("%d%d", &bb, &ee);
+		if (bb < ee) {
+			printf("%d\n", min(lsum[ee] - lsum[bb], lsum[bb] + lsum[n + 1] - lsum[ee]));
+		}
+		else printf("%d\n", min(lsum[bb] - lsum[ee], lsum[ee] + lsum[n + 1] - lsum[bb]));
+	}
+	return 0;
+}
