@@ -1,0 +1,34 @@
+//AC
+//排序 + 滑窗思想
+
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int n, m;
+	scanf("%d%d", &n, &m);
+	vector<int> coins(n);
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &coins[i]);
+	}
+	sort(coins.begin(), coins.end());
+	int left = 0, right = n - 1;
+	while (coins[right] > m)
+		right--;
+	while (left < right) {
+		if (coins[left] + coins[right] > m) {
+			right--;
+		}
+		else if (coins[left] + coins[right] < m) {
+			left++;
+		}
+		else {
+			cout << coins[left] << " " << coins[right] << endl;
+			return 0;
+		}
+	}
+	cout << "No Solution" << endl;
+	return 0;
+}
