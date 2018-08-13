@@ -1,0 +1,35 @@
+//AC
+//动态规划经典问题 最长不下降子序列问题。
+
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int n, m, l, temp;
+	scanf("%d", &n);
+	vector<int> color(n + 1);
+	scanf("%d", &m);
+	for (int i = 1; i <= m; i++) {
+		scanf("%d", &temp);
+		color[temp] = i;
+	}
+	scanf("%d", &l);
+	vector<int> stripe;
+	for (int i = 0; i < l; i++) {
+		scanf("%d", &temp);
+		if (color[temp] != 0) stripe.push_back(temp);
+	}
+	vector<int> dp(stripe.size());
+	int luis = 0;
+	for (int i = 0; i < stripe.size(); i++) {
+		dp[i] = 1;
+		for (int j = 0; j < i; j++) {
+			if (color[stripe[i]] >= color[stripe[j]]) dp[i] = max(dp[j] + 1, dp[i]);
+		}
+		luis = max(luis, dp[i]);
+	}
+	cout << luis << endl;
+	return 0;
+}
