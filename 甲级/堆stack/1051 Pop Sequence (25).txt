@@ -1,0 +1,34 @@
+//AC
+//堆模拟stack
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <stack>
+using namespace std;
+
+int main() {
+	int cmax, l, n;
+	scanf("%d%d%d", &cmax, &l, &n);
+	for (int i = 0; i < n; i++) {
+		vector<int> order(l);
+		stack<int> s;
+		int head = 0;
+		for (int j = 0; j < l; j++) {
+			cin >> order[j];
+		}
+		for (int j = 1; j <= l; j++) {
+			s.push(j);
+			if (s.size() > cmax) {
+				break;
+			}
+			while (order[head] == s.top() && head < l) {
+				s.pop();
+				head++;
+				if (s.empty()) break;
+			}
+		}
+		if (!s.empty()) cout << "NO" << endl;
+		else cout << "YES" << endl;
+	}
+	return 0;
+}
