@@ -1,0 +1,45 @@
+//AC
+//链表排序问题
+//坑点1：有点结点根本不在链表中需要排除
+//坑点2：起始结点地址为-1，那么应当直接输出0 -1结束程序
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+using namespace std;
+struct LinkNode {
+	int key;
+	int next;
+};
+struct LinkNode2 {
+	int addr;
+	int key;
+};
+int main() {
+	LinkNode node[100000];
+	vector<LinkNode2> tnodes;
+	int n, staddr, taddr;
+	scanf("%d%d", &n, &staddr);
+	if (staddr == -1) {
+		printf("0 -1\n");
+		return 0;
+	}
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &taddr);
+		scanf("%d%d", &node[taddr].key, &node[taddr].next);
+
+	}
+	taddr = staddr;
+	while (taddr != -1) {
+		tnodes.push_back({ taddr, node[taddr].key });
+		taddr = node[taddr].next;
+	}
+	sort(tnodes.begin(), tnodes.end(), [](const LinkNode2 &a, const LinkNode2 &b) {return a.key < b.key; });
+	printf("%d %05d\n", tnodes.size(), tnodes[0].addr);
+	for (int i = 0; i < tnodes.size() - 1; i++) {
+		printf("%05d %d %05d\n", tnodes[i].addr, tnodes[i].key, tnodes[i+1].addr);
+	}
+	printf("%05d %d %d\n", tnodes.back().addr, tnodes.back().key, -1);
+	return 0;
+}
