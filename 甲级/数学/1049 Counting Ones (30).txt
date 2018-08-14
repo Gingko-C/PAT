@@ -1,0 +1,30 @@
+//AC
+//例如0~99 包含100个由任何两个0~9组成的不重复组合所以1占10分之1即100*2/10=20
+//例如0~999 即1000*3/10=300
+//当首位大于1时，如200，则是2个0~99+1XX（100个）+200本身（不含1）=2*100*2/10+10^2+0=140
+//当首位等于1时，如130，则是1个0~99+1XX(30+1个)+3个0~9+1X(10个)=100*2/10 + 31+3=64
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <math.h>
+using namespace std;
+
+int main() {
+	int count = 0;
+	string n;
+	cin >> n;
+	int hs = n.size() - 1;
+	for (int i = 0; i <= hs; i++) {
+		if (n[i] > '1') count += pow(10, hs - i);
+		if (n[i] == '1') {
+			if (i == hs) count += 1; //n.begin()+hs+1==n.end() 这时候无法构造string所以需要单独处理
+			else count += stoi(string(n.begin() + i + 1, n.end())) + 1; //加1是因为如130实际有31个1XX
+		}
+		while (n[i] != '0') {
+			count += (hs - i)*pow(10, hs - i) / 10;
+			n[i]--;
+		}
+	}
+	cout << count << endl;
+	return 0;
+}
