@@ -1,0 +1,23 @@
+//AC
+//简单的字符串处理，注意时间复杂度
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+using namespace std;
+
+int main() {
+	string a, b;
+	getline(cin, a);
+	getline(cin, b);
+	map<char, bool> count_letter;
+	for (char i : b) {
+		if (count_letter[i] == 0) count_letter[i] = 1;
+	}
+	string res;
+	for (char i : a) {
+		if (count_letter[i] == 0) res.push_back(i);
+	}
+	cout << res << endl;
+	return 0;
+}
