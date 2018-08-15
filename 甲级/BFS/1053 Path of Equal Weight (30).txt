@@ -1,0 +1,77 @@
+//AC
+//BFS题目 没什么坑
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <queue>
+using namespace std;
+
+struct MyNode
+{
+	int weight;
+	int wsum;
+	int fnode;
+	vector<int> weight_way;
+};
+bool cmp(const MyNode &a, const MyNode &b) {
+	int i = 0;
+	while (1) {
+		if (a.weight_way[i] > b.weight_way[i]) return 1;
+		if (a.weight_way[i] < b.weight_way[i]) return 0;
+		i++;
+		if (a.weight_way.size() == i) return 0;
+		if (b.weight_way.size() == i) return 1;
+	}
+	return 0;
+}
+int main() {
+	int n, m, s, id, k;
+	scanf("%d%d%d", &n, &m, &s);
+	vector<MyNode> node(n);
+	vector<MyNode> res;
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &node[i].weight);
+	}
+	vector<vector<int>> f2c(n);
+	for (int i = 0; i < m; i++) {
+		scanf("%d%d",&id, &k);
+		f2c[id].resize(k);
+		for (int j = 0; j < k; j++) {
+			scanf("%d", &f2c[id][j]);
+			node[f2c[id][j]].fnode = id;
+		}
+	}
+	queue<int> que;
+	que.push(0);
+	node[0].weight_way.push_back(node[0].weight);
+	node[0].wsum = node[0].weight;
+	while (!que.empty()) {
+		int temp = que.front();
+		que.pop();
+		if (temp != 0) {
+			node[temp].wsum = node[node[temp].fnode].wsum + node[temp].weight;
+			node[temp].weight_way = node[node[temp].fnode].weight_way;
+			node[temp].weight_way.push_back(node[temp].weight);
+		}
+		for (auto i : f2c[temp]) {
+			que.push(i);
+		}
+		if (f2c[temp].empty() && node[temp].wsum == s) {
+			res.push_back(node[temp]);
+		}
+	}
+	sort(res.begin(), res.end(), cmp);
+	for (auto i : res) {
+		bool cout_flag = 0;
+		for (auto j : i.weight_way) {
+			if (cout_flag == 0) {
+				cout_flag = 1;
+				printf("%d", j);
+
+			}
+			else printf(" %d", j);
+		}
+		printf("\n");
+	}
+	return 0;
+}
