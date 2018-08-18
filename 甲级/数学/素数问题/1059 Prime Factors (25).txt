@@ -1,0 +1,71 @@
+//AC
+//先判断n是否为1
+//提取n的所有2因素
+//判断n的[3,sqrt(n)]区间的素数因素，每次取最小的那个
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <map>
+#include <math.h>
+using namespace std;
+map<int, int> cnt;
+
+bool isPrime(int n) {
+	if (n < 2) return 0;
+	if (n == 2) return 1;
+	for (int i = 2; i <= sqrt(n); i++) {
+		if (n % i == 0) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+int getSmallestPrimeFactor(int n) {
+	for (int i = 3; i <= sqrt(n); i++) {
+		if (n%i == 0 && isPrime(i)) {
+			return i;
+		}
+	}
+	return n;
+}
+void findPrime(int n) {
+	vector<int> res;
+	int fac;
+	while (n % 2 == 0) {
+		n /= 2;
+		cnt[2]++;
+	}
+	while (n != 1) {
+		fac = getSmallestPrimeFactor(n);
+		cnt[fac]++;
+		n /= fac;
+	}
+}
+
+int main() {
+	int n;
+	cin >> n;
+		if (n == 1) {
+		cout << "1=1" << endl;
+		return 0;
+	}
+	findPrime(n);
+	cout << n << "=";
+	bool cflag = 0;
+	for (auto i : cnt) {
+		if (cflag == 0) {
+			cflag = 1;
+		}
+		else cout << "*";
+		if (i.second != 1) {
+			cout << i.first << "^" << i.second;
+		}
+		else {
+			cout << i.first;
+		}
+	}
+	cout << endl;
+	return 0;
+}
+
