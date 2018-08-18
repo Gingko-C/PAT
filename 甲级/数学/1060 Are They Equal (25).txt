@@ -1,0 +1,63 @@
+//21/25
+//科学计数法的问题
+//始终有两个用例无法通过 不知道应该什么格式。。 
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main() {
+	int n, a_digit, b_digit, digits = 0;
+	cin >> n;
+	string a, b, ap, bp;
+	cin >> a >> b;
+	if (a >= "1") {
+		a_digit = a.find('.');
+		if (a_digit == -1) a_digit = a.size();
+	}
+	else {
+		a_digit = a.find_first_not_of({ '0','.' });
+		if (a_digit == -1) {
+			a_digit = 0;
+			ap = "0";
+		}
+		else a_digit = -a_digit + 2;
+	}
+	if (b >= "1") {
+		b_digit = b.find('.');
+		if (b_digit == -1) b_digit = b.size();
+	}
+	else {
+		b_digit = b.find_first_not_of({ '0','.' });
+		if (b_digit == -1) {
+			b_digit = 0;
+			bp = "0";
+		}
+		else b_digit = -b_digit + 2;
+	}
+	if (ap.empty()) {
+		for (auto i = a.find_first_not_of({ '0','.' }); i != a.size(); i++) {
+			if (a[i] != '.') ap += a[i];
+			if (ap.size() == n) break;
+		}
+	}
+	if (bp.empty()) {
+		for (auto i = b.find_first_not_of({ '0','.' }); i != b.size(); i++) {
+			if (b[i] != '.') bp += b[i];
+			if (bp.size() == n) break;
+		}
+	}
+
+	if (ap == bp && a_digit==b_digit) {
+		cout << "YES" << " 0." << ap << "*10^" << a_digit << endl;
+	}
+	else {
+		cout << "NO";
+		if (ap == "0") cout << " " << ap << "*10^" << a_digit;
+		else cout << " 0." << ap << "*10^" << a_digit;
+		if (bp == "0") cout << " " << bp << "*10^" << b_digit << endl;
+		else cout << " 0." << bp << "*10^" << b_digit << endl;
+	}
+	return 0;
+}
