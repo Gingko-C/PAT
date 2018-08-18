@@ -1,0 +1,47 @@
+//AC
+//字符串处理和进制转换问题
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+vector<int> Mplus(vector<int> &a, vector<int> &b) {
+	vector<int> res(3);
+	for (int i = 2; i >= 0; i--) {
+		res[i] = a[i] + b[i];
+	}
+	if (res[2] >= 29) {
+		res[2] -= 29;
+		res[1]++;
+	}
+	if (res[1] >= 17) {
+		res[1] -= 17;
+		res[0]++;
+	}
+	return res;
+}
+int main() {
+	vector<int> va, vb, res;
+	string s;
+	cin >> s;
+	auto sl = s.begin();
+	while (sl!=s.end())
+	{
+		auto temp = sl;
+		sl = find(sl, s.end(), '.');
+		va.push_back(stoi(string(temp, sl)));
+		if (sl != s.end()) sl++;
+	}
+	cin >> s;
+	sl = s.begin();
+	while (sl != s.end())
+	{
+		auto temp = sl;
+		sl = find(sl, s.end(), '.');
+		vb.push_back(stoi(string(temp, sl)));
+		if (sl != s.end()) sl++;
+	}
+	res = Mplus(va, vb);
+	cout << res[0] << "." << res[1] << "." << res[2] << endl;
+	return 0;
+}
