@@ -1,3 +1,7 @@
+//AC
+//BST和CBT的综合题目很有学习价值！
+//解决BST的题目最主要就是迭代求root
+
 #include <vector>
 #include <iostream>
 #include <algorithm>
