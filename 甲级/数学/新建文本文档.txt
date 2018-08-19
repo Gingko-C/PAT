@@ -1,0 +1,30 @@
+//AC
+//long long 等于 __int64 [-2^63, 2^63)
+//这道题没有出现2^63不然还需要处理溢出
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+bool isAplusBbigerC(long long a,long long b,long long c) {
+	if (a > 0 && b > 0) {
+		if (b > INT64_MAX - a) return 1;
+	}
+	if (a < 0 && b < 0) {
+		if (INT64_MIN - b > a) return 0;
+	}
+	return a + b > c;
+}
+
+int main() {
+	int t;
+	cin >> t;
+	long long a, b, c;
+	for (int i = 1; i <= t; i++) {
+		cin >> a >> b >> c;
+		if (isAplusBbigerC(a, b, c)) {
+			cout << "Case #" << i << ": true" << endl;
+		}
+		else cout<< "Case #" << i << ": false" << endl;
+	}
+	return 0;
+}
