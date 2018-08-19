@@ -1,0 +1,33 @@
+//AC
+//灵活应用 sort unique set_union set_intersection inserter
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <iterator>
+using namespace std;
+
+int main() {
+	int n, k, q, q1, q2;
+	scanf("%d", &n);
+	vector<vector<int>> v(n + 1);
+	vector<int> union_q, intersection_q;
+	for (int i = 1; i <= n; i++) {
+		scanf("%d", &k);
+		v[i].resize(k);
+		for (int j = 0; j < k; j++) {
+			scanf("%d", &v[i][j]);
+		}
+		sort(v[i].begin(), v[i].end());
+		v[i].erase(unique(v[i].begin(), v[i].end()), v[i].end());
+	}
+	scanf("%d", &q);
+	for (int i = 0; i < q; i++) {
+		scanf("%d%d", &q1, &q2);
+		set_union(v[q1].begin(), v[q1].end(), v[q2].begin(), v[q2].end(), inserter(union_q,union_q.begin()));
+		set_intersection(v[q1].begin(), v[q1].end(), v[q2].begin(), v[q2].end(), inserter(intersection_q,intersection_q.begin()));
+		printf("%0.1f%%\n", 100 * ((double)intersection_q.size() / (double)union_q.size()));
+		union_q.clear();
+		intersection_q.clear();
+	}
+	return 0;
+}
