@@ -1,0 +1,42 @@
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+using namespace std;
+vector<int> res;
+vector<int> node;
+
+void findroot(int st, int ed, int d) {
+	if (ed == st) return;
+	int n = ed - st;
+	int d_full = log(n + 1) / log(2);   //d为全二叉树的深度，节点数量n=(2^d)-1,故d=log(n+1)/log(2)
+	int pow2d_full = pow(2, d_full);
+	int rest_n = n - pow2d_full + 1; //最后一层的节点数
+	int rest_n_l = min(rest_n, (pow2d_full) / 2); //最后一层左侧结点数
+	int root = st + (pow2d_full - 2) / 2 + rest_n_l; //root结点的下标
+	res[d] = node[root];
+	findroot(st, root, 2 * d + 1);//左子的结点在levelorder中的位置
+	findroot(root + 1, ed, 2 * d + 2);//右子的结点在levelorder中的位置
+}
+
+int main() {
+	int n;
+	scanf("%d", &n);
+	node.resize(n);
+	res.resize(n);
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &node[i]);
+	}
+	sort(node.begin(), node.end());
+	findroot(0, n, 0);
+	bool cflag = 0;
+	for (int i : res) {
+		if (cflag == 0) {
+			cflag = 1;
+			printf("%d", i);
+		}
+		else printf(" %d", i);
+	}
+	printf("\n");
+	return 0;
+}
