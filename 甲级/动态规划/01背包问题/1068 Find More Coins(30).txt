@@ -1,0 +1,44 @@
+//AC
+//01背包问题
+//当取用前1个物体时，背包容量1~m时分别装多少.....当取用前n个物体时，背包容量1~m时分别装多少，这便是背包问题的动态规划思路
+
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int n, m;
+	scanf("%d%d", &n, &m);
+	int v[10010];
+	vector<vector<int>> vv(n + 1, vector<int>(m + 1));
+	vector<vector<vector<int>>> vvv(n + 1, vector<vector<int>>(m + 1));
+	for (int i = 1; i <= n; i++) {
+		scanf("%d", &v[i]);
+	}
+	sort(v + 1, v + n + 1, [](int a, int b) {return a > b; });
+	for (int i = 1; i <= n; i++) {
+		for (int j = m; j >=v[i]; j--) {
+			vv[i][j] = vv[i - 1][j];
+			vvv[i][j] = vvv[i - 1][j];
+			if (vv[i][j] <= vv[i - 1][j - v[i]] + v[i]) {
+				vv[i][j] = vv[i - 1][j - v[i]] + v[i];
+				vvv[i][j] = vvv[i - 1][j - v[i]];
+				vvv[i][j].push_back(v[i]);
+			}
+		}
+	}
+	bool cflag = 1;
+	if (vv[n][m] == m) {
+		for (int i = vvv[n][m].size() - 1; i >= 0;i--) {
+			if (cflag == 1) {
+				cflag = 0;
+				cout << vvv[n][m][i];
+			}
+			else cout << " " << vvv[n][m][i];
+		}
+		cout << endl;
+	}
+	else cout << "No Solution" << endl;
+	return 0;
+}
