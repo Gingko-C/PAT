@@ -1,0 +1,38 @@
+//AC
+//MAP
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+using namespace std;
+
+map<string, int> m;
+
+int main() {
+	string in_put, temp, key;
+	int value = 0;
+	getline(cin, in_put);
+	for (int i = 0; i < in_put.size(); i++) {
+		if (isalnum(in_put[i])) {
+			temp += tolower(in_put[i]);
+		}
+		else {
+			if (!temp.empty()) {
+				m[temp]++;
+				temp.clear();
+			}
+		}
+	}
+	if (!temp.empty()) {
+		m[temp]++;
+	}
+	for (auto i : m) {
+		if (i.second > value) {
+			key = i.first;
+			value = i.second;
+		}
+	}
+	cout << key << " " << value << endl;
+	return 0;
+}
