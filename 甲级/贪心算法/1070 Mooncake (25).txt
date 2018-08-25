@@ -1,0 +1,41 @@
+//AC
+//贪心算法
+//坑点：总量amount也可能为float
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+struct cake
+{
+	float amount;
+	float price;
+	float unit;
+};
+
+int main() {
+	int n, m;
+	float res = 0;
+	scanf("%d%d", &n, &m);
+	vector<cake> c(n);
+	for (int i = 0; i < n; i++) {
+		scanf("%f", &c[i].amount);
+	}
+	for (int i = 0; i < n; i++) {
+		scanf("%f", &c[i].price);
+		c[i].unit = c[i].price / c[i].amount;
+	}
+	sort(c.begin(), c.end(), [](const cake &a, const cake &b) {return a.unit > b.unit; });
+	for (int i = 0; i < n; i++) {
+		if (c[i].amount <= m) {
+			m -= c[i].amount;
+			res += c[i].price;
+		}
+		else {
+			res += c[i].price*((float)m / c[i].amount);
+			break;
+		}
+	}
+	printf("%0.2f\n", res);
+	return 0;
+}
