@@ -1,0 +1,113 @@
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+#include <iomanip>
+using namespace std;
+#define INT_MAX 99999999
+
+
+int main() {
+	int n, m, k, ds;
+	int bb, ee;
+	cin >> n >> m >> k >> ds;
+	vector<vector<int>> w(n + m + 1, vector<int>(n + m + 1, INT_MAX));
+	vector<vector<int>> ms(m + 1, vector<int>(n + m + 1, INT_MAX));
+	vector<bool> flag(n + m + 1, 0);
+	string sb, se;
+
+	for (int i = 0; i < k; i++) {
+		cin >> sb >> se;
+		if (sb[0] == 'G') {
+			bb = n + stoi(string(sb.begin() + 1, sb.end()));
+		}
+		else bb = stoi(sb);
+		if (se[0] == 'G') {
+			ee = n + stoi(string(se.begin() + 1, se.end()));
+		}
+		else ee = stoi(se);
+		cin >> w[bb][ee];
+		w[ee][bb] = w[bb][ee];
+		if (bb > n) {
+			ms[bb - n][ee] = w[bb][ee];
+		}
+		if (ee > n) {
+			ms[ee - n][bb] = w[bb][ee];
+		}
+	}
+	for (int st = n + 1; st <= n + m; st++) {
+		ms[st - n][st] = 0;
+		flag[st] = 1;
+		int baseP = -1;
+		for (int i = 0; i < n + m - 1; i++) {
+			int dmin = INT_MAX;
+			for (int j = 1; j <= n + m; j++) {
+				if (flag[j] == 0 && ms[st - n][j] < dmin) {
+					baseP = j;
+					dmin = ms[st - n][j];
+				}
+			}
+			if (baseP == -1) break;
+			flag[baseP] = 1;
+			for (int j = 1; j <= n + m; j++) {
+				if (flag[j] == 0) {
+					int temp = (w[baseP][j] == INT_MAX) ? INT_MAX : ms[st - n][baseP] + w[baseP][j];
+					if (temp < ms[st - n][j]) {
+						ms[st - n][j] = temp;
+					}
+				}
+			}
+		}
+	}
+	float ava = INT_MAX;
+	float minn = INT_MAX;
+	vector<int> oks;
+	vector<int> sum(m + 1);
+	vector<int> mdist(m + 1, INT_MAX);
+	int res;
+	
+	for (int i = 1; i <= m; i++) {
+		bool tflag = 0;
+		for (int j = 1; j <= n; j++) {
+			if (ms[i][j] > ds) tflag = 1;
+			sum[i] += ms[i][j];
+			mdist[i] = min(mdist[i], ms[i][j]);
+		}
+		if (tflag == 0) oks.push_back(i);
+	}
+	if (oks.size() == 0) {
+		cout << "No Solution" << endl;
+		return 0;
+	}
+	res = oks[0];
+	int cnt = 0;
+	vector<int> ccc;
+	if (oks.size() != 1) {
+		for (auto i : oks) {
+			if (mdist[i] < minn) {
+				cnt = 1;
+				minn = mdist[i];
+				ccc = { i };
+			}
+			else if (mdist[i] == minn) {
+				cnt++;
+				ccc.push_back(i);
+			}
+		}
+		res = ccc[0];
+	}
+	else minn = mdist[res];
+	if (ccc.size() != 1 && ccc.size() != 0) {
+		for (auto i : ccc) {
+			if ((float)sum[i] / n < ava) {
+				ava = (float)sum[i] / n;
+				res = i;
+			}
+		}
+	}
+	else ava = (float)sum[res] / n;
+	cout << 'G' << res << endl;
+	cout << fixed << setprecision(1) << minn << " " << fixed << setprecision(1) << ava << endl;
+	return 0;
+}
