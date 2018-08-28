@@ -1,0 +1,42 @@
+//AC
+//科学计数法问题
+
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main() {
+	string input;
+	cin >> input;
+	char sign_1, sign_2;
+	sign_1 = input[0];
+	auto e_p = input.begin() + input.find('E');
+	string num = input[1] + string(input.begin() + 3, e_p);
+	sign_2 = input[e_p - input.begin() + 1];
+	int m = stoi(string(e_p + 2, input.end()));
+	if (sign_2 == '-') {
+		if (sign_1 == '-') cout << "-";
+		cout << "0.";
+		for (int i = 1; i < m; i++) {
+			cout << 0;
+		}
+		cout << num << endl;
+	}
+	else {
+		if (sign_1 == '-') cout << "-";
+		if (num[0] != '0') cout << num[0];
+		for (int i = 1; i < num.size(); i++) {
+			if (m == 0) cout << '.';
+			cout << num[i];
+			m--;
+		}
+		while (m > 0) {
+			cout << 0;
+			m--;
+		}
+		cout << endl;
+	}
+	return 0;
+}
