@@ -6,7 +6,7 @@ using namespace std;
 
 struct User {
 	int id;
-	int score[6] = { -1,-1,-1,-1,-1,-1 };
+	int score[6] = { -2,-2,-2,-2,-2,-2 };
 	int total_score = 0;
 	int perfect_solution_num = 0;
 	bool ok = 0;
@@ -32,18 +32,18 @@ int main() {
 	for (int i = 0; i < submission_num; i++) {
 		scanf("%d%d%d", &id, &pid, &score);
 		m[id].id = id;
-		if (score > m[id].score[pid]) {
-			if (m[id].score[pid] != -1) m[id].total_score -= m[id].score[pid];
+		if (score > m[id].score[pid] && score >= 0) {
+			if (m[id].score[pid] > 0) m[id].total_score -= m[id].score[pid];
 			m[id].score[pid] = score;
 			m[id].total_score += score;
 			if (score == full_score[pid]) m[id].perfect_solution_num++;
 			if (m[id].ok == 0) m[id].ok = 1;
 		}
-		if (score == -1 && m[id].score[pid] == -1) {
-			m[id].score[pid] = 0;
+		else if (score == -1 && m[id].score[pid] == -2) {
+			m[id].score[pid] = -1;
 		}
 	}
-	sort(m.begin() + 1, m.begin() + user_num + 1, cmp);
+	sort(m.begin() + 1, m.end(), cmp);
 	int rank = 1, temp_score = m[1].total_score;
 	for (int i = 1; i <= user_num; i++) {
 		if (m[i].ok == 0) continue;
@@ -55,8 +55,11 @@ int main() {
 		}
 		printf("%05d %d", m[i].id, m[i].total_score);
 		for (int j = 1; j <= problem_num; j++) {
-			if (m[i].score[j] != -1) {
+			if (m[i].score[j] >= 0) {
 				printf(" %d", m[i].score[j]);
+			}
+			else if (m[i].score[j] == -1) {
+				printf(" 0");
 			}
 			else {
 				printf(" -");
