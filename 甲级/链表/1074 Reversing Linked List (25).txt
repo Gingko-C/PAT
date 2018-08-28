@@ -1,0 +1,45 @@
+//AC
+//链表问题 MAP VECTOR
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <map>
+using namespace std;
+
+struct LinkNode {
+	int addr;
+	int data;
+	int next;
+};
+
+int main() {
+	map<int, LinkNode> m;
+	vector<LinkNode> s;
+	vector<LinkNode> v;
+	int st, n, k;
+	int addr, data, next;
+	scanf("%d%d%d", &st, &n, &k);
+	for (int i = 0; i < n; i++) {
+		scanf("%d%d%d", &addr, &data, &next);
+		m[addr] = { addr,data,next };
+	}
+	int k_temp = k;
+	while (st != -1) {
+		s.push_back(m[st]);
+		k_temp--;
+		if (k_temp == 0) {
+			k_temp = k;
+			v.insert(v.end(), s.rbegin(), s.rend());
+			s.clear();
+		}
+		st = m[st].next;
+	}
+	if (!s.empty()) {
+		v.insert(v.end(), s.begin(), s.end());
+	}
+	for (int i = 0; i < v.size() - 1; i++) {
+		printf("%05d %d %05d\n", v[i].addr, v[i].data, v[i + 1].addr);
+	}
+	printf("%05d %d %d\n", v.back().addr, v.back().data, -1);
+	return 0;
+}
