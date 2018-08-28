@@ -1,0 +1,60 @@
+//AC
+//BFS的应用
+//float：2^23 = 8388608，共七位，意味着最多能有7位有效数字，但绝对能保证的为6位，也即float的精度为6~7位有效数字；
+//double：2^52 = 4503599627370496，一共16位，同理，double的精度为15~16位。
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <queue>
+#include <cmath>
+using namespace std;
+
+struct Chain {
+	vector<int> child;
+	int d = -1;
+	bool isRet = 0;
+	int sale = 0;
+};
+
+int main() {
+	int n, k, temp;
+  double uprice, r, res = 0.0;
+	scanf("%d %lf %lf", &n, &uprice, &r);
+	vector<Chain> vc(n);
+	vector<bool> visit(n, 0);
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &k);
+		if (k == 0) {
+			vc[i].isRet = 1;
+			scanf("%d", &vc[i].sale);
+		}
+		else {
+			for (int j = 0; j < k; j++) {
+				scanf("%d", &temp);
+				vc[i].child.push_back(temp);
+			}
+		}
+	}
+	queue<int> q;
+	visit[0] = 1;
+	vc[0].d = 0;
+	q.push(0);
+	while (!q.empty()) {
+		int t = q.front();
+		q.pop();
+		for (int i : vc[t].child) {
+			if (visit[i] == 0) {
+				visit[i] = 1;
+				vc[i].d = vc[t].d + 1;
+				q.push(i);
+			}
+		}
+	}
+	for (auto i : vc) {
+		if (i.isRet == 1 && i.d != -1) {
+			res += i.sale * uprice * pow(1 + r/100, i.d);
+		}
+	}
+	printf("%.1f\n", res);
+	return 0;
+}
