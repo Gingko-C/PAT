@@ -1,0 +1,68 @@
+#include <vector>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+struct User {
+	int id;
+	int score[6] = { -1,-1,-1,-1,-1,-1 };
+	int total_score = 0;
+	int perfect_solution_num = 0;
+	bool ok = 0;
+};
+
+bool cmp(const User &a, const User &b) {
+	if (a.total_score > b.total_score) return 1;
+	if (a.total_score < b.total_score) return 0;
+	if (a.perfect_solution_num > b.perfect_solution_num) return 1;
+	if (a.perfect_solution_num < b.perfect_solution_num) return 0;
+	return a.id < b.id;
+}
+
+int main() {
+	int user_num, problem_num, submission_num;
+	scanf("%d%d%d", &user_num, &problem_num, &submission_num);
+	vector<User> m(user_num + 1);
+	int full_score[6];
+	for (int i = 1; i <= problem_num; i++) {
+		scanf("%d", &full_score[i]);
+	}
+	int id, pid, score;
+	for (int i = 0; i < submission_num; i++) {
+		scanf("%d%d%d", &id, &pid, &score);
+		m[id].id = id;
+		if (score > m[id].score[pid]) {
+			if (m[id].score[pid] != -1) m[id].total_score -= m[id].score[pid];
+			m[id].score[pid] = score;
+			m[id].total_score += score;
+			if (score == full_score[pid]) m[id].perfect_solution_num++;
+			if (m[id].ok == 0) m[id].ok = 1;
+		}
+		if (score == -1 && m[id].score[pid] == -1) {
+			m[id].score[pid] = 0;
+		}
+	}
+	sort(m.begin() + 1, m.begin() + user_num + 1, cmp);
+	int rank = 1, temp_score = m[1].total_score;
+	for (int i = 1; i <= user_num; i++) {
+		if (m[i].ok == 0) continue;
+		if (temp_score == m[i].total_score) printf("%d ", rank);
+		else {
+			rank = i;
+			temp_score = m[i].total_score;
+			printf("%d ", rank);
+		}
+		printf("%05d %d", m[i].id, m[i].total_score);
+		for (int j = 1; j <= problem_num; j++) {
+			if (m[i].score[j] != -1) {
+				printf(" %d", m[i].score[j]);
+			}
+			else {
+				printf(" -");
+			}
+		}
+		printf("\n");
+	}
+	return 0;
+}
