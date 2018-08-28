@@ -1,0 +1,43 @@
+//AC
+//字符串处理
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main() {
+	int n;
+	scanf("%d", &n);
+	vector<string> vs(n);
+	getline(cin, vs[0]);
+	for (int i = 0; i < n; i++) {
+		getline(cin, vs[i]);
+		if (vs[i].empty()) {
+			printf("nai\n");
+			return 0;
+		}
+	}
+	string commonstr = vs[0];
+	for (int i = 1; i < n; i++) {
+		string tempstr;
+		auto p1 = commonstr.end() - 1;
+		auto p2 = vs[i].end() - 1;
+		while (*p1 == *p2) {
+			if (p1 == commonstr.begin() || p2 == vs[i].begin()) break;
+			p1--;
+			p2--;
+		}
+		if (*p1 != *p2) {
+			tempstr = string(p1 + 1, commonstr.end());
+		}
+		else {
+			tempstr = string(p1, commonstr.end());
+		}
+		commonstr = tempstr;
+		if (commonstr.empty()) break;
+	}
+	if (commonstr.empty()) printf("nai\n");
+	else printf("%s\n", commonstr.c_str());
+	return 0;
+}
