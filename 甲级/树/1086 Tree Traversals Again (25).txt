@@ -1,0 +1,60 @@
+//AC
+//树的遍历
+//stack栈的理解和应用
+//root结点不一定为1
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <stack>
+#include <string>
+using namespace std;
+
+struct node {
+	int l = -1, r = -1;
+};
+
+vector<node> v;
+bool flag = 0;
+
+void postorder(int i) {
+	if (v[i].l != -1) postorder(v[i].l);
+	if (v[i].r != -1) postorder(v[i].r);
+	if (flag == 0) flag = 1;
+	else cout << " ";
+	cout << i;
+}
+
+
+int main() {
+	int n, m, f = 0, st = 1;
+	bool lr = 0;
+	string temp_s;
+	stack<int> s;
+	cin >> n;
+	v.resize(n + 1);
+	for (int i = 1; i <= 2 * n; i++) {
+		cin >> temp_s;
+		if (temp_s[1] == 'u') {
+			cin >> m;
+			if (i == 1) st = m;
+			s.push(m);
+			if (lr == 0) {
+				v[f].l = m;
+				f = m;
+			}
+			else {
+				v[f].r = m;
+				f = m;
+				lr = 0;
+			}
+		}
+		if (temp_s[1] == 'o') {
+			f = s.top();
+			s.pop();
+			lr = 1;
+		}
+	}
+	postorder(st);
+	cout << endl;
+	return 0;
+}
