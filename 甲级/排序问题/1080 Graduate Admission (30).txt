@@ -1,0 +1,78 @@
+//AC
+//排序问题
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+struct app {
+	int id;
+	int ge, gi;
+	vector<int> school;
+	int rank;
+};
+
+struct school {
+	int quota;
+	int need_rank = 50000;
+	vector<int> admit;
+};
+
+bool cmp(const app &a,const app &b){
+	if (a.ge + a.gi > b.ge + b.gi) return 1;
+	if (a.ge + a.gi < b.ge + b.gi) return 0;
+	if (a.ge > b.ge) return 1;
+	if (a.ge < b.ge) return 0;
+	return a.id < b.id;
+}
+
+int main() {
+	int n, m, k, temp;
+	scanf("%d%d%d", &n, &m, &k);
+	vector<school> s(m);
+	vector<app> v(n);
+	for (int i = 0; i < m; i++) {
+		scanf("%d", &s[i].quota);
+	}
+	for (int i = 0; i < n; i++) {
+		scanf("%d%d", &v[i].ge, &v[i].gi);
+		v[i].id = i;
+		for (int j = 0; j < k; j++) {
+			scanf("%d", &temp);
+			v[i].school.push_back(temp);
+		}
+	}
+	sort(v.begin(), v.end(), cmp);
+	int rank = 1;
+	v[0].rank = 1;
+	for (int i = 1; i < n; i++) {
+		if (v[i].gi == v[i - 1].gi && v[i].ge == v[i - 1].ge) {
+			v[i].rank = rank;
+		}
+		else {
+			rank = i + 1;
+			v[i].rank = rank;
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < k; j++) {
+			if (v[i].rank <= s[v[i].school[j]].need_rank) {
+				s[v[i].school[j]].admit.push_back(v[i].id);
+				if (s[v[i].school[j]].admit.size() == s[v[i].school[j]].quota) {
+					s[v[i].school[j]].need_rank = v[i].rank;
+				}
+				break;
+			}
+		}
+	}
+	for (int i = 0; i < m; i++) {
+		sort(s[i].admit.begin(), s[i].admit.end());
+		for (int j = 0; j < s[i].admit.size(); j++) {
+			if (j != 0) printf(" ");
+			printf("%d", s[i].admit[j]);
+		}
+		printf("\n");
+	}
+	return 0;
+}
