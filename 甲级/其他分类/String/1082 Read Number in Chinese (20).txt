@@ -1,0 +1,55 @@
+//AC
+//字符串处理
+//注意格式 末尾空格 和 只有一个0的时候需要输出ling
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main() {
+	vector<string> chineseNum = { "ling","yi","er","san","si","wu","liu","qi","ba","jiu" };
+	vector<string> seat = { "","Shi","Bai","Qian","Wan","Shi","Bai","Qian","Yi" };
+	string num_str;
+	char sign = '+';
+	cin >> num_str;
+	if (num_str[0] == '-') {
+		sign = '-';
+		num_str = num_str.substr(1, num_str.size());
+	}
+	vector<int> num(num_str.size());
+	for (int i = 0; i < num_str.size(); i++) {
+		num[i] = num_str[i] - '0';
+	}
+	if (num.size() == 1 && num[0] == 0) {
+		cout << "ling" << endl;
+		return 0;
+	}
+	bool ling = 0;
+	bool you = 0;
+	if (sign == '-') cout << "Fu ";
+	for (int i = 0; i < num.size(); i++) {
+		int s = num.size() - 1 - i;
+		if (num[i] != 0) {
+			if (s < 8) you = 1;
+			if (i != 0) cout << " ";
+			if (ling == 1) {
+				cout << "ling ";
+				ling = 0;
+			}
+			if (s != 0) cout << chineseNum[num[i]] << " " << seat[s];
+			else cout << chineseNum[num[i]];
+		} 
+		else {
+			ling = 1;
+			if (s == 4 && you == 1) {
+				cout << " ";
+				ling = 0;
+				you = 0;
+				cout << seat[s];
+			}
+		}
+	}
+	cout << endl;
+	return 0;
+}
