@@ -1,0 +1,86 @@
+//AC
+//插入排序和归并排序
+//插入排序是将初始数列中的元素依次插入一个新数列，每次插入都在该在的位置（本题需要每次排序后补全后部未排序的序列）
+//归并排序，是将初始数列拆分成2个一组，分组排序，然后4个一组，再然后8个，不断归并直到归一。
+
+归并操作的工作原理如下：
+第一步：申请空间，使其大小为两个已经排序序列之和，该空间用来存放合并后的序列
+第二步：设定两个指针，最初位置分别为两个已经排序序列的起始位置
+第三步：比较两个指针所指向的元素，选择相对小的元素放入到合并空间，并移动指针到下一位置
+重复步骤3直到某一指针超出序列尾
+将另一序列剩下的所有元素直接复制到合并序列尾
+
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int n;
+	bool res = 0;
+	cin >> n;
+	vector<int> v(n);
+	vector<int> dest(n);
+	for (int i = 0; i < n; i++) {
+		cin >> v[i];
+	}
+	for (int i = 0; i < n; i++) {
+		cin >> dest[i];
+	}
+	vector<int> insort;
+	insort.push_back(v[0]);
+	vector<int> temp = insort;
+	for (int i = 1; i < n; i++) {
+		for (int j = 0; j < insort.size(); j++) {
+			if (v[i] > insort.back()) {
+				insort.push_back(v[i]);
+				break;
+			}
+			if (v[i] < insort[j]) {
+				insort.insert(insort.begin() + j, v[i]);
+				break;
+			}
+		}
+		temp = insort;
+		temp.insert(temp.end(), v.begin() + i + 1, v.end());
+		if (res == 1) {
+			for (int j = 0; j < n; j++) {
+				if (j != 0) cout << " ";
+				cout << temp[j];
+			}
+			cout << endl;
+			return 0;
+		}
+		if (temp == dest) {
+			res = 1;
+			cout << "Insertion Sort" << endl;
+		}
+	}
+	cout << "Merge Sort" << endl;
+	auto a = v.begin();
+	for (int i = 2; i <= n; i *= 2) {
+		a = v.begin();
+		while (i <= v.end() - a) {
+			sort(a, a + i);
+			a += i;
+		}
+		sort(a, v.end());
+		if (res == 1) break;
+		if (v == dest) res = 1;
+	}
+	if (res == 1) {
+		for (int i = 0; i < n; i++) {
+			if (i != 0) cout << " ";
+			cout << v[i];
+		}
+	}
+	else {
+		sort(v.begin(), v.end());
+		for (int i = 0; i < n; i++) {
+			if (i != 0) cout << " ";
+			cout << v[i];
+		}
+	}
+	cout << endl;
+	return 0;
+}
