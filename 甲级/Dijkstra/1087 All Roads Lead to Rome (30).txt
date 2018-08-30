@@ -1,3 +1,112 @@
+//AC
+//Dijkstra算法
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+#include <climits>
+using namespace std;
+vector<int> happiness;
+
+bool cmp(vector<int> &a, vector<int> &b) {
+	int hsuma = 0, hsumb = 0;
+	for (int i = 1; i < a.size(); i++) {
+		hsuma += happiness[a[i]];
+	}
+	for (int i = 1; i < b.size(); i++) {
+		hsumb += happiness[b[i]];
+	}
+	if (hsuma > hsumb) return 1;
+	if (hsuma < hsumb) return 0;
+	if ((float)hsuma / (a.size() - 1) > (float)hsumb / (b.size() - 1)) return 1;
+	if ((float)hsuma / (a.size() - 1) < (float)hsumb / (b.size() - 1)) return 0;
+	return 1;
+}
+
+int main() {
+	int n, k, temp, dest;
+	cin >> n >> k;
+	vector<string> city(n);
+	map<string, int> s2i;
+	happiness.resize(n);
+	string bb, ee;
+	vector<vector<int>> w(n, vector<int>(n, INT_MAX));
+	vector<int> dis(n, INT_MAX);
+	vector<bool> flag(n, 0);
+	vector<vector<vector<int>>> sws(n);
+	cin >> city[0];
+	s2i[city[0]] = 0;
+	for (int i = 1; i < n; i++) {
+		cin >> city[i] >> happiness[i];
+		s2i[city[i]] = i;
+		if (city[i] == "ROM") dest = i;
+	}
+	for (int i = 0; i < k; i++) {
+		cin >> bb >> ee >> temp;
+		w[s2i[bb]][s2i[ee]] = w[s2i[ee]][s2i[bb]] = min(temp, w[s2i[bb]][s2i[ee]]);
+		if (s2i[bb] == 0) {
+			if (temp < dis[s2i[ee]]) {
+				dis[s2i[ee]] = temp;
+				sws[s2i[ee]] = { {0,s2i[ee]} };
+			}
+		}
+		if (s2i[ee] == 0) {
+			if (temp < dis[s2i[bb]]) {
+				dis[s2i[bb]] = temp;
+				sws[s2i[bb]] = { { 0,s2i[bb] } };
+			}
+		}
+	}
+	dis[0] = 0;
+	flag[0] = 1;
+	for (int i = 1; i < n; i++) {
+		int baseP = -1;
+		int temp_min = INT_MAX;
+		for (int j = 1; j < n; j++) {
+			if (flag[j] == 0 && dis[j] < temp_min) {
+				temp_min = dis[j];
+				baseP = j;
+			}
+		}
+		if (baseP == -1) break;
+		flag[baseP] = 1;
+		for (int j = 1; j < n; j++) {
+			if (flag[j] == 0) {
+				int temp_dis = (w[baseP][j] == INT_MAX) ? INT_MAX : dis[baseP] + w[baseP][j];
+				if (temp_dis < dis[j]) {
+					dis[j] = temp_dis;
+					sws[j] = sws[baseP];
+					for (auto &o : sws[j]) {
+						o.push_back(j);
+					}
+				}
+				else if (temp_dis == dis[j]) {
+					for (auto o : sws[baseP]) {
+						sws[j].push_back(o);
+						sws[j].back().push_back(j);
+					}
+				}
+			}
+		}
+	}
+	sort(sws[dest].begin(), sws[dest].end(), cmp);
+	int hsum = 0;
+	for (int i = 1; i < sws[dest][0].size(); i++) {
+		hsum += happiness[sws[dest][0][i]];
+	}
+	cout << sws[dest].size() << " " << dis[dest] << " " << hsum << " " << hsum / (sws[dest][0].size() - 1) << endl;
+	for (int i = 0; i < sws[dest][0].size(); i++) {
+		if (i != 0) cout << "->";
+		cout << city[sws[dest][0][i]];
+	}
+	cout << endl;
+	return 0;
+}
+
+
+//第一次做的时候：
+//AC
 #include <vector>
 using std::vector;
 #include <map>
