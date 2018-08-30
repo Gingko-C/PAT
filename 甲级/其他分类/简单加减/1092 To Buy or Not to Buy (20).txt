@@ -1,0 +1,28 @@
+//AC
+//MAP的使用
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+using namespace std;
+
+int main() {
+	int ls = 0;
+	string a, b;
+	map<char, int> ma, mb;
+	cin >> a >> b;
+	for (char c : a) {
+		ma[c]++;
+	}
+	for (char c : b) {
+		mb[c]++;
+	}
+	for (auto c : mb) {
+		int diff = ma[c.first] - c.second;
+		if (diff < 0) ls -= diff;
+	}
+	if (ls == 0) cout << "Yes " << a.size() - b.size() << endl;
+	else cout << "No " << ls << endl;
+	return 0;
+}
