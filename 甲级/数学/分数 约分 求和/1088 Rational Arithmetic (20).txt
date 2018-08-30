@@ -1,0 +1,97 @@
+//AC
+//求最大公约数！
+//辗转相除法:假设a>b,如果a不能被b整除，则将b赋值给a，余数赋值给b，重复执行a%b,直到a能够被b整除。此时返回b的值，则为最大公约数。
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+//求最大公约数！ 重点！
+long long int gys(long long int a, long long int b) {
+	return (a%b == 0) ? b : gys(b, a%b);
+}
+
+void simp(long long int &a, long long int &b) {
+	long long int g;
+	if (a < 0) g = gys(-a, b);
+	else g = gys(a, b);
+	a /= g;
+	b /=g;
+}
+
+void printC(long long int a, long long int b) {
+	if (a >= 0) {
+		if (a < b && a != 0) {
+			cout << a << "/" << b;
+		}
+		else {
+			cout << a / b;
+			if (a % b != 0) cout << " " << a % b << "/" << b;
+		}
+	}
+	else {
+		cout << "(-";
+		if ((-a) < b) {
+			cout << (-a) << "/" << b << ")";
+		}
+		else {
+			cout << (-a) / b;
+			if ((-a) % b != 0) cout << " " << (-a) % b << "/" << b;
+			cout << ")";
+		}
+	}
+}
+int main() {
+	long long int a1, b1, a2, b2;
+	scanf("%lld/%lld %lld/%lld", &a1, &b1, &a2, &b2);
+	simp(a1, b1);
+	simp(a2, b2);
+
+	printC(a1, b1);
+	cout << " + ";
+	printC(a2, b2);
+	cout << " = ";
+	long long int bt = b1 * b2, at = a1 * b2 + a2 * b1;
+	simp(at, bt);
+	printC(at, bt);
+	cout << endl;
+
+	printC(a1, b1);
+	cout << " - ";
+	printC(a2, b2);
+	cout << " = ";
+	bt = b1 * b2, at = a1 * b2 - a2 * b1;
+	simp(at, bt);
+	printC(at, bt);
+	cout << endl;
+
+	printC(a1, b1);
+	cout << " * ";
+	printC(a2, b2);
+	cout << " = ";
+	bt = b1 * b2, at = a1 * a2;
+	simp(at, bt);
+	printC(at, bt);
+	cout << endl;
+
+	printC(a1, b1);
+	cout << " / ";
+	printC(a2, b2);
+	cout << " = ";
+	bt = b1 * a2, at = a1 * b2;
+	if (bt > 0) {
+		simp(at, bt);
+		printC(at, bt);
+	}
+	else if (bt < 0) {
+		at = -at;
+		bt = -bt;
+		simp(at, bt);
+		printC(at, bt);
+	}
+	else cout << "Inf";
+	cout << endl;
+
+	return 0;
+}
