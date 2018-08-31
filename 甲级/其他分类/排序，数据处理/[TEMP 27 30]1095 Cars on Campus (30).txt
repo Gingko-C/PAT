@@ -1,0 +1,102 @@
+//27/30
+//时间顺序存储 判断数据有效性 记录时刻及时刻下停车辆 提供查询 根据有效数据计算每辆车的停车总时长 输出最长停车车辆牌号和时间
+//思路简单 有一个测试节点未通过 原因不明
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+#include <iomanip>
+using namespace std;
+
+struct Rec
+{
+	string id;
+	int t;
+	bool inout;
+	bool right = 0;
+	int torder = -1;
+};
+
+int str2s(string &s) {
+	int hh = stoi(string(s.begin(), s.begin() + 2));
+	int mm = stoi(string(s.begin()+3, s.begin() + 5));
+	int ss = stoi(string(s.begin() + 6, s.begin() + 8));
+	return hh * 3600 + mm * 60 + ss;
+}
+
+int main() {
+	int n, k, cnt = 0, lst = 0;
+	cin >> n >> k;
+	vector<Rec> r;
+	string id, time, inout;
+	map<string, vector<Rec>> m;
+	vector<int> trec(1);
+	vector<int> nrec(1);
+	vector<string> lstid;
+	for (int i = 0; i < n; i++) {
+		cin >> id >> time >> inout;
+		r.push_back({ id,str2s(time),(inout == "in") ? true : false });
+	}
+	sort(r.begin(), r.end(), [](const Rec &a, const Rec &b) {return a.t < b.t; });
+	for (int i = 0; i < n; i++) {
+		if (m[r[i].id].size() % 2 == 0 && r[i].inout == 1) {
+			r[i].right = 1;
+			r[i].torder = i;
+			m[r[i].id].push_back(r[i]);
+		}
+		else if (m[r[i].id].size() % 2 == 1 && r[i].inout == 1) {
+			r[i].right = 1;
+			r[i].torder = i;
+			r[m[r[i].id].back().torder].right = 0;
+			m[r[i].id].pop_back();
+			m[r[i].id].push_back(r[i]);
+		}
+		else if (m[r[i].id].size() % 2 == 1 && r[i].inout == 0) {
+			r[i].right = 1;
+			r[i].torder = i;
+			m[r[i].id].push_back(r[i]);
+		}
+	}
+	for (auto i : m) {
+		if (i.second.size() % 2 == 1) {
+			r[i.second.back().torder].right = 0;
+			i.second.pop_back();
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		if (r[i].right == 1) {
+			trec.push_back(r[i].t);
+			if (r[i].inout == 1) {
+				cnt++;
+			}
+			else {
+				cnt--;
+			}
+			nrec.push_back(cnt);
+		}
+	}
+	for (int i = 0; i < k; i++) {
+		cin >> time;
+		int dest = upper_bound(trec.begin(), trec.end(), str2s(time)) - trec.begin() - 1;
+		cout << nrec[dest] << endl;
+	}
+	for (auto i : m) {
+		int tsum = 0;
+		for (int j = 0; j < i.second.size(); j += 2) {
+			tsum += i.second[j + 1].t - i.second[j].t;
+		}
+		if (tsum > lst) {
+			lst = tsum;
+			lstid = { i.first };
+		}
+		else if (tsum == lst) {
+			lstid.push_back(i.first);
+		}
+	}
+	for (auto i : lstid) {
+		cout << i << " ";
+	}
+	cout << setw(2) << setfill('0') << lst / 3600 << ":" << setw(2) << setfill('0') << (lst % 3600) / 60 << ":" << setw(2) << setfill('0') << lst % 60 << endl;
+	return 0;
+}
