@@ -1,0 +1,42 @@
+//AC
+//链表的重排
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <map>
+#include <cmath>
+using namespace std;
+struct node {
+	int addr, val, next;
+};
+int main() {
+	int st, n, addr, val, next;
+	map<int, int> m;
+	map<int, node> nds;
+	vector<node> res, rem;
+	scanf("%d%d", &st, &n);
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &addr);
+		scanf("%d%d", &nds[addr].val, &nds[addr].next);
+		nds[addr].addr = addr;
+	}
+	while (st != -1) {
+		if (m[abs(nds[st].val)] == 0) {
+			res.push_back(nds[st]);
+			m[abs(nds[st].val)]++;
+		}
+		else rem.push_back(nds[st]);
+		st = nds[st].next;
+	}
+	for (int i = 0; i < res.size() - 1;i++) {
+		printf("%05d %d %05d\n", res[i].addr, res[i].val, res[i + 1].addr);
+	}
+	printf("%05d %d %0d\n", res.back().addr, res.back().val, -1);
+	if (rem.size() != 0) {
+		for (int i = 0; i < rem.size() - 1; i++) {
+			printf("%05d %d %05d\n", rem[i].addr, rem[i].val, rem[i + 1].addr);
+		}
+		printf("%05d %d %0d\n", rem.back().addr, rem.back().val, -1);
+	}
+	return 0;
+}
