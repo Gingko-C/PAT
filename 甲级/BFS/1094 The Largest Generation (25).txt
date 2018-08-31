@@ -1,0 +1,50 @@
+//AC
+//BFS
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <queue>
+using namespace std;
+
+int main() {
+	int n, m, id, k, temp;
+	cin >> n >> m;
+	vector<vector<int>> f2c(n + 1);
+	vector<bool> visit(n + 1, 0);
+	vector<int> deep(n + 1);
+	vector<int> g(n + 1);
+	for (int i = 0; i < m; i++) {
+		cin >> id >> k;
+		for (int j = 0; j < k; j++) {
+			cin >> temp;
+			f2c[id].push_back(temp);
+		}
+	}
+	queue<int> q;
+	q.push(1);
+	visit[1] = 1;
+	deep[1] = 1;
+	g[1] = 1;
+	while (!q.empty()) {
+		int p = q.front();
+		q.pop();
+		for (int i : f2c[p]) {
+			if (visit[i] == 0) {
+				deep[i] = deep[p] + 1;
+				g[deep[i]]++;
+				visit[i] = 1;
+				q.push(i);
+			}
+		}
+	}
+	int max_g, max_n = 0;
+	for (int i = 1; i <= n; i++) {
+		if (g[i] > max_n) {
+			max_n = g[i];
+			max_g = i;
+		}
+		if (g[i] == 0) break;
+	}
+	cout << max_n << " " << max_g << endl;
+	return 0;
+}
