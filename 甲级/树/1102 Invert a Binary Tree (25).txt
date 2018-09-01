@@ -1,0 +1,80 @@
+//AC
+//反转二叉树
+//Google: 90% of our engineers use the software you wrote (Homebrew), but you can't invert a binary tree on a whiteboard so fuck off.
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <queue>
+using namespace std;
+
+struct node {
+	int val, left = -1, right = -1, deep = -1;
+};
+vector<node> v;
+bool cflag = 0;
+void inorder(int st) {
+	if (v[st].left != -1) inorder(v[st].left);
+	if (cflag == 0) cflag = 1;
+	else cout << " ";
+	cout << st;
+	if (v[st].right != -1) inorder(v[st].right);
+}
+int main() {
+	int n, temp, st;
+	cin >> n;
+	v.resize(n);
+	vector<bool> f(n, 0);
+	vector<vector<int>> deep(n);
+	string s;
+	for (int i = 0; i < n; i++) {
+		cin >> s;
+		v[i].val = i;
+		if (s != "-") {
+			temp = stoi(s);
+			v[i].right = temp;
+			f[temp] = 1;
+		}
+		cin >> s;
+		if (s != "-") {
+			temp = stoi(s);
+			v[i].left = temp;
+			f[temp] = 1;
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		if (f[i] == 0) {
+			st = i;
+			break;
+		}
+	}
+	queue<int> q;
+	q.push(st);
+	v[st].deep = 0;
+	deep[0].push_back(st);
+	while (!q.empty()) {
+		int t = q.front();
+		q.pop();
+		if (v[t].left != -1) {
+			v[v[t].left].deep = v[t].deep + 1;
+			deep[v[t].deep + 1].push_back(v[t].left);
+			q.push(v[t].left);
+		}
+		if (v[t].right != -1) {
+			v[v[t].right].deep = v[t].deep + 1;
+			deep[v[t].deep + 1].push_back(v[t].right);
+			q.push(v[t].right);
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		if (deep[i].empty()) break;
+		for (int j : deep[i]) {
+			if (i != 0) cout << " ";
+			cout << j;
+		}
+	}
+	cout << endl;
+	inorder(st);
+	cout << endl;
+	return 0;
+}
