@@ -1,0 +1,49 @@
+//AC
+//进制转换 
+//注意13 26 39 ... 的转换
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+using namespace std;
+
+map<string, int> m = { {"tret",0}, { "jan",1}, {"feb",2}, {"mar",3}, {"apr",4}, {"may",5}, {"jun",6}, {"jly",7}, {"aug",8}, {"sep",9}, {"oct",10}, {"nov",11}, {"dec",12 },
+{"tam",13}, {"hel",26}, {"maa",39}, {"huh",52}, {"tou",65}, {"kes",78}, {"hei",91}, {"elo",104}, {"syy",117}, {"lok",130}, {"mer",143}, {"jou",156} };
+vector<string> vl = { "tret", "jan", "feb", "mar", "apr", "may", "jun", "jly", "aug", "sep", "oct", "nov", "dec" };
+vector<string> vh = { "tret", "tam", "hel", "maa", "huh", "tou", "kes", "hei", "elo", "syy", "lok", "mer", "jou" };
+
+int mar2earth(string &s) {
+	if (s.size() > 4) {
+		return m[string(s.begin(), s.begin() + 3)] + m[string(s.begin() + 4, s.end())];
+	}
+	else return m[s];
+}
+
+string earth2mar(int t) {
+	string s = "";
+	if (t > 12) {
+		if (t % 13 != 0) {
+			s += vh[t / 13];
+			s += " ";
+			s += vl[t % 13];
+		}
+		else s += vh[t / 13];
+	}
+	else s += vl[t % 13];
+	return s;
+}
+
+int main() {
+	int n;
+	cin >> n;
+	string s;
+	getline(cin, s);
+	for (int i = 0; i < n; i++) {
+		getline(cin, s);
+		if (isalpha(s[0])) cout << mar2earth(s);
+		else cout << earth2mar(stoi(s));
+		cout << endl;
+	}
+	return 0;
+}
