@@ -1,0 +1,72 @@
+//冒泡排序 此处T为容器迭代器 如vector<int>::iterator 
+template<typename T>
+void BubbleSort(T a, T b) {
+	int sz = b - a;
+	for (int i = sz; i >0; i--) {
+		for (int j = 0; j < i - 1; j++) {
+			if (*(a + j) > *(a + j + 1)) swap(*(a + j), *(a + j + 1));
+		}
+	}
+}
+
+//鸡尾酒排序 改进的冒泡排序
+template<typename T>
+void CocktailSort(T a, T b) {
+	int sz = b - a;
+	for (int i = sz - 1, j = 0; i > j; i--, j++) {
+		for (int k = j; k < i; k++) {
+			if (*(a + k) > *(a + k + 1)) swap(*(a + k), *(a + k + 1));
+		}
+		for (int k = i - 1; k > j; k--) {
+			if (*(a + k - 1) > *(a + k)) swap(*(a + k - 1), *(a + k));
+		}
+	}
+}
+
+//选择排序 
+template<typename T>
+void SelectionSort(T a, T b) {
+	int sz = b - a, temp_min, m;
+	for (int i = 0; i < sz; i++) {
+		temp_min = INT_MAX;
+		for (int j = i; j < sz; j++) {
+			if (*(a + j) < temp_min) {
+				temp_min = *(a + j);
+				m = j;
+			}
+		}
+		swap(*(a + i), *(a + m));
+	}
+}
+
+//二分插入排序
+void InsertionSortDichotomy(vector<int> &v) {
+	int sz = v.size();
+	for (int i = 1; i < sz; i++) {
+		int left = 0;
+		int right = i - 1;
+		int val = v[i];
+		while (left <= right) {
+			int mid = (left + right) / 2;
+			if (v[mid] > val) right = mid - 1;
+			else left = mid + 1;
+		}
+		for (int j = i; j > left; j--) {
+			v[j] = v[j - 1];
+		}
+		v[left] = val;
+	}
+}
+
+
+int main() {
+	vector<int> v = { 5,4,3,2,1,0 };
+	InsertionSortDichotomy(v);
+	for (int i = 0; i < v.size(); i++) {
+		if (i != 0) cout << " ";
+		cout << v[i];
+	}
+	cout << endl;
+	system("pause");
+	return 0;
+}
