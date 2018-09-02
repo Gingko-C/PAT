@@ -1,0 +1,96 @@
+//AC
+//插入排序和堆排序 很总要！
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+vector<int> samp;
+vector<int> tv;
+int flag = 0;
+void updateHeap(vector<int> &v, int n) {
+	int max_n = v.size() - 1;
+	int max_t = n;
+	if (2 * n <= max_n) max_t = (v[2 * n] < v[n]) ? n : 2 * n;
+	else return;
+	if (2 * n + 1 <= max_n) max_t = (v[2 * n + 1] < v[max_t]) ? max_t : 2 * n + 1;
+	swap(v[n], v[max_t]); 
+	if (max_t != n) updateHeap(v, max_t);
+}
+
+void initHeap(vector<int> &v) {
+	int n = v.size() - 1;
+	int lastf = n / 2;
+	for (int i = lastf; i >= 1; i--) {
+		updateHeap(v, i);
+	}
+}
+
+void heapSort(vector<int> &v,vector<int> &res) {
+	initHeap(v);
+	while (v.size() != 1) {  //v[0]并不是堆数的结点
+		int topn = v[1];
+		swap(v[1], v.back());
+		v.pop_back();
+		updateHeap(v, 1);
+		res.push_back(topn);
+		tv = v;
+		tv.insert(tv.end(), res.rbegin(), res.rend());
+		if (flag == 2) break;
+		if (tv == samp) flag = 2;
+	}
+}
+
+
+void insertionSort(vector<int> &v) {
+	int sz = v.size() - 1;
+	for (int i = 2; i <= sz; i++) {
+		int val = v[i];
+		int left = 0;
+		int right = i - 1;
+		while (left <= right) {
+			int mid = (left + right) / 2;
+			if (v[mid] > val) right = mid - 1;
+			else left = mid + 1;
+		}
+		for (int j = i; j > left; j--) {
+			v[j] = v[j - 1];
+		}
+		v[left] = val;
+		if (flag == 1) break;
+		if (v == samp) {
+			flag = 1;
+		}
+	}
+}
+int main() {
+	int n;
+	cin >> n;
+	vector<int> v(n + 1);
+	vector<int> res;
+	for (int i = 1; i <= n; i++) {
+		cin >> v[i];
+	}
+	vector<int> v2 = v;
+	samp.resize(n + 1);
+	for (int i = 1; i <= n; i++) {
+		cin >> samp[i];
+	}
+	insertionSort(v);
+	if (flag == 1) {
+		cout << "Insertion Sort" << endl;
+		for (int i = 1; i <= n; i++) {
+			if (i != 1) cout << " ";
+			cout << v[i];
+		}
+		cout << endl;
+		return 0;
+	}
+	heapSort(v2, res);
+	cout << "Heap Sort" << endl;
+	for (auto b = tv.begin() + 1; b != tv.end(); b++) {
+		if (b != tv.begin() + 1) cout << " ";
+		cout << *b;
+	}
+	cout << endl;
+	return 0;
+}
