@@ -58,6 +58,23 @@ void InsertionSortDichotomy(vector<int> &v) {
 	}
 }
 
+//快速排序
+int Partition(vector<int> &v, int left, int right) {
+	int tail = left - 1;
+	for (int i = left; i < right; i++) {
+		if (v[left] < v[right]) swap(v[++tail], v[left]);
+	}
+	swap(v[tail + 1], v[right]);
+	return tail + 1;
+}
+
+void QuickSort(vector<int> &v, int left, int right) {
+	if (left >= right) return;
+	int p = Partition(v, left, right);
+	QuickSort(v, left, p - 1);
+	QuickSort(v, p + 1, right);
+}
+
 
 int main() {
 	vector<int> v = { 5,4,3,2,1,0 };
