@@ -1,0 +1,48 @@
+//27/30 有一个用例超时
+//DFS  
+//穷举思想
+
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <cmath>
+using namespace std;
+
+int n, k, p, max_fsum = -1;
+vector<int> fnode;
+vector<int> facval(1);
+void dfs(int index, int nsum, int fsum, int facnum, vector<int> tfnode) {
+	if (facnum != 0) tfnode.push_back(index);
+	if (facnum == k) {
+		if (nsum == n && fsum > max_fsum) {
+			max_fsum = fsum;
+			fnode = tfnode;
+		}
+		return;
+	}
+	for (int i = index; i >= 1; i--) {
+		if(nsum+facval[i]<=n) 
+			dfs(i, nsum + facval[i], fsum + i, facnum + 1, tfnode);
+	}
+}
+
+int main() {
+	cin >> n >> k >> p;
+	for (int i = 1; i <= n; i++) {
+	  int temp=pow(i,p);
+		if(temp<=n)	facval.push_back(temp);
+		else break;
+	}
+	dfs(facval.size() - 1, 0, 0, 0, fnode);
+	if (max_fsum == -1) cout << "Impossible" << endl;
+	else {
+		cout << n << " = ";
+		for (int i = 0; i < fnode.size(); i++) {
+			if (i != 0) cout << " + ";
+			cout << fnode[i] << "^" << p;
+		}
+		cout << endl;
+	}
+	return 0;
+}
