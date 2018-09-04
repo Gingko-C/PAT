@@ -1,0 +1,52 @@
+//AC
+//数据判断、注意输出判断单复数
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main() {
+	int n, cnt = 0;
+	double sum = 0;
+	cin >> n;
+	string s;
+	for (int i = 0; i < n; i++) {
+		cin >> s;
+		int sign = 1;
+		bool legal = 0;
+		if (s[0] == '-') {
+			sign = -1;
+			s = string(s.begin() + 1, s.end());
+		}
+		if (s.find_first_not_of("0123456789.") == string::npos) {
+			auto sp = s.find_first_of(".");
+			if (sp != string::npos) {
+				if (s.size() - sp - 1 <= 2 && sp != 0) {
+					if (find(s.begin() + sp + 1, s.end(), '.') == s.end()) {
+						if (stod(s) <= 1000) {
+							legal = 1;
+							cnt++;
+							sum += sign * stod(s);
+						}
+					}
+				}
+			}
+			else {
+				if (stod(s) <= 1000) {
+					legal = 1;
+					cnt++;
+					sum += sign * stod(s);
+				}
+			}
+		}
+		if (legal == 0) {
+			cout << "ERROR: " << ((sign == -1) ? "-" : "");
+			cout << s << " is not a legal number" << endl;
+		}
+	}
+	if (cnt == 0) printf("The average of 0 numbers is Undefined\n");
+	else if (cnt == 1) printf("The average of %d number is %0.2lf\n", 1, sum);
+	else printf("The average of %d numbers is %0.2lf\n", cnt, sum / cnt);
+	return 0;
+}
