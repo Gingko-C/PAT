@@ -1,0 +1,49 @@
+//AC
+//BFS
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <queue>
+#include <cmath>
+using namespace std;
+
+int main() {
+	int n, k, temp, resn;
+	double basep, r, minp;
+	scanf("%d %lf %lf", &n, &basep, &r);
+	vector<int> deep(n);
+	vector<int> leafdeep(n);
+	vector<vector<int>> f2c(n);
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &k);
+		for (int j = 0; j < k; j++) {
+			scanf("%d", &temp);
+			f2c[i].push_back(temp);
+		}
+	}
+	queue<int> q;
+	q.push(0);
+	deep[0] = 0;
+	while (!q.empty()) {
+		int t = q.front();
+		q.pop();
+		if (f2c[t].empty()) {
+			leafdeep[deep[t]]++;
+		}
+		else {
+			for (int i : f2c[t]) {
+				deep[i] = deep[t] + 1;
+				q.push(i);
+			}
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		if (leafdeep[i] != 0) {
+			minp = basep * pow(1 + r / 100, i);
+			resn = leafdeep[i];
+			break;
+		}
+	}
+	printf("%0.4lf %d\n", minp, resn);
+	return 0;
+}
