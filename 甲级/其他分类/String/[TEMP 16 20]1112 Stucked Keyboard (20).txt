@@ -1,0 +1,55 @@
+//16/20
+//考察string和map
+//不知道为什么有两个用例无法通过
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+using namespace std;
+
+int main() {
+	int n, cnt = 1;
+	string s;
+	map<char, int> m;
+	cin >> n >> s;
+	vector<char> detectorder;
+	for (int i = 1; i <= s.size(); i++) {
+		if (i != s.size()) {
+			if (s[i] == s[i - 1]) cnt++;
+			else {
+				if (cnt % n == 0) {
+					if (m[s[i - 1]] == 0) {
+						m[s[i - 1]] = 2;
+						detectorder.push_back(s[i - 1]);
+					}
+				}
+				else m[s[i - 1]] = 1;
+				cnt = 1;
+			}
+		}
+		else {
+			if ((cnt % n) == 0) {
+				if (m[s[i - 1]] == 0) m[s[i - 1]] = 2;
+			}
+			else m[s[i - 1]] = 1;
+		}
+	}
+	for (char c : detectorder) {
+		if (m[c] == 2) {
+			cout << c;
+		}
+	}
+	cout << endl;
+	cnt = 0;
+	for (int i = 0; i < s.size(); i++) {
+		if (m[s[i]] == 2 && cnt == 0) {
+			cnt = n;
+			cout << s[i];
+		}
+		if (cnt != 0) cnt--;
+		else cout << s[i];
+	}
+	cout << endl;
+	return 0;
+}
