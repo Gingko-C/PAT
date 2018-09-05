@@ -1,0 +1,25 @@
+//AC
+//简单加减
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int n, res1, res2 = 0;
+	cin >> n;
+	vector<int> v(n);
+	for (int i = 0; i < n; i++) {
+		cin >> v[i];
+	}
+	sort(v.rbegin(), v.rend());
+	res1 = n % 2;
+	for (int i = 0; i < n / 2 + res1; i++) {
+		res2 += v[i];
+	}
+	for (int i = n / 2 + res1; i < n; i++) {
+		res2 -= v[i];
+	}
+	cout << res1 << " " << res2 << endl;
+	return 0;
+}
