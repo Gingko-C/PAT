@@ -1,0 +1,87 @@
+//AC
+//BFS 
+//注意每个人都完整记录与其有关系的其他人id这样才能完整遍历。
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <queue>
+#include <map>
+#include <set>
+using namespace std;
+struct Person {
+	int father, mother, sets = 0, area = 0;
+	vector<int> relativce;
+};
+struct Family {
+	int totalsets = 0, totalarea = 0, m;
+	set<int> member;
+	double avgset, avgarea;
+};
+Person ps[10000];
+bool cmp(const Family &a, const Family &b) {
+	if (a.avgarea > b.avgarea) return 1;
+	if (a.avgarea < b.avgarea) return 0;
+	return *a.member.begin() < *b.member.begin();
+}
+int main() {
+	int n, id, cid,k;
+	cin >> n;
+	vector<int> rec(n);
+	vector<bool> flag(10000, 0);
+	vector<Family> fam;
+	for (int i = 0; i < n; i++) {
+		cin >> id;
+		rec[i] = id;
+		cin >> ps[id].father >> ps[id].mother >> k;
+		if (ps[id].father != -1) {
+			ps[id].relativce.push_back(ps[id].father);
+			ps[ps[id].father].relativce.push_back(id);
+		}
+		if (ps[id].mother != -1) {
+			ps[id].relativce.push_back(ps[id].mother);
+			ps[ps[id].mother].relativce.push_back(id);
+
+		}
+		for (int j = 0; j < k; j++) {
+			cin >> cid;
+			ps[id].relativce.push_back(cid);
+			ps[cid].relativce.push_back(id);
+		}
+		cin >> ps[id].sets >> ps[id].area;
+	}
+	for (int i = 0; i < n; i++) {
+		if (flag[rec[i]] == 0) {
+			Family f;
+			f.member.insert(rec[i]);
+			f.totalarea += ps[rec[i]].area;
+			f.totalsets += ps[rec[i]].sets;
+			queue<int> q;
+			q.push(rec[i]);
+			flag[rec[i]] = 1;
+			while (!q.empty()) {
+				int t = q.front();
+				q.pop();
+				for (int r : ps[t].relativce) {
+					if (flag[r] == 0) {
+						f.member.insert(r);
+						flag[r] = 1;
+						f.totalarea += ps[r].area;
+						f.totalsets += ps[r].sets;
+						q.push(r);
+					}
+				}
+			}
+			f.m = f.member.size();
+			f.avgarea = (double)f.totalarea / f.m;
+			f.avgset = (double)f.totalsets / f.m;
+			fam.push_back(f);
+		}
+	}
+	sort(fam.begin(), fam.end(), cmp);
+	printf("%d\n", fam.size());
+	for (auto i : fam) {
+		printf("%04d %d %0.3lf %0.3lf\n", *i.member.begin(), i.member.size(), i.avgset, i.avgarea);
+	}
+	system("pause");
+	return 0;
+}
