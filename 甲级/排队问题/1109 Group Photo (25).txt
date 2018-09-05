@@ -1,0 +1,57 @@
+//AC
+//如何最高在中间，向两边逐次递减，是这道题的难点
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+struct Person {
+	string name;
+	int high;
+};
+
+bool cmp(const Person &a, const Person &b) {
+	if (a.high > b.high) return 1;
+	if (a.high < b.high) return 0;
+	return a.name < b.name;
+}
+int main() {
+	int n, row, k = 0;
+	scanf("%d%d", &n, &row);
+	vector<Person> v(n);
+	vector<vector<Person>> rp(row);
+	for (int i = 0; i < n; i++) {
+		cin >> v[i].name >> v[i].high;
+	}
+	sort(v.begin(), v.end(), cmp);
+	while (k < n) {
+		for (int i = row - 1; i >= 0; i--) {
+			int p = n / row;
+			if (i == row - 1) p += n % row;
+			int d = 1, ct = p / 2 + 1;
+			rp[i].resize(p + 1);
+			rp[i][ct] = v[k];
+			k++;
+			p--;
+			while (p > 0) {
+				rp[i][ct - d] = v[k];
+				k++;
+				p--;
+				if (p == 0) break;
+				rp[i][ct + d] = v[k];
+				k++;
+				p--;
+				d++;
+			}
+		}
+	}
+	for (int i = row - 1; i >= 0; i--) {
+		for (int j = 1; j < rp[i].size(); j++) {
+			if (j != 1) printf(" ");
+			printf("%s", rp[i][j].name.c_str());
+		}
+		printf("\n");
+	}
+	return 0;
+}
