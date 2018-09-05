@@ -1,0 +1,149 @@
+//AC
+//Dijkstra 题型 注意输出有两种形式
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <climits>
+using namespace std;
+
+int main() {
+	int n, m, l, t, o, v1, v2;
+	cin >> n >> m;
+	vector<vector<int>> len(n, vector<int>(n, INT_MAX));
+	vector<int> disl(n, INT_MAX);
+	vector<vector<int>> time(n, vector<int>(n, INT_MAX));
+	vector<int> dist(n, INT_MAX);
+	vector<bool> flagl(n, 0);
+	vector<bool> flagt(n, 0);
+	vector<vector<vector<int>>> lw(n);
+	vector<vector<vector<int>>> tw(n);
+	for (int i = 0; i < m; i++) {
+		cin >> v1 >> v2 >> o >> l >> t;
+		len[v1][v2] = l;
+		time[v1][v2] = t;
+		if (o == 0) {
+			len[v2][v1] = l;
+			time[v2][v1] = t;
+		}
+	}
+	cin >> v1 >> v2; //起点和终点
+	disl[v1] = dist[v1] = 0;
+	flagl[v1] = flagt[v1] = 1;
+	for (int i = 0; i < n; i++) {
+		if (len[v1][i] != INT_MAX) {
+			disl[i] = len[v1][i];
+			lw[i] = { { v1,i } };
+		}
+		if (time[v1][i] != INT_MAX) {
+			dist[i] = time[v1][i];
+			tw[i] = { { v1,i } };
+		}
+	}
+	for (int k = 0; k < n - 1; k++) {
+		int temp_min = INT_MAX;
+		int baseP = -1;
+		for (int i = 0; i < n; i++) {
+			if (flagl[i] == 0 && disl[i] < temp_min) {
+				temp_min = disl[i];
+				baseP = i;
+			}
+		}
+		if (baseP == -1) break;
+		flagl[baseP] = 1;
+		for (int i = 0; i < n; i++) {
+			if (flagl[i] == 0) {
+				int temp_l = (len[baseP][i] == INT_MAX) ? INT_MAX : len[baseP][i] + disl[baseP];
+				if (temp_l < disl[i]) {
+					disl[i] = temp_l;
+					lw[i] = lw[baseP];
+					for (auto &a : lw[i]) {
+						a.push_back(i);
+					}
+				}
+				else if (temp_l == disl[i]) {
+					for (auto a : lw[baseP]) {
+						lw[i].push_back(a);
+						lw[i].back().push_back(i);
+					}
+				}
+			}
+		}
+	}
+	for (int k = 0; k < n - 1; k++) {
+		int temp_min = INT_MAX;
+		int baseP = -1;
+		for (int i = 0; i < n; i++) {
+			if (flagt[i] == 0 && dist[i] < temp_min) {
+				temp_min = dist[i];
+				baseP = i;
+			}
+		}
+		if (baseP == -1) break;
+		flagt[baseP] = 1;
+		for (int i = 0; i < n; i++) {
+			if (flagt[i] == 0) {
+				int temp_t = (time[baseP][i] == INT_MAX) ? INT_MAX : time[baseP][i] + dist[baseP];
+				if (temp_t < dist[i]) {
+					dist[i] = temp_t;
+					tw[i] = tw[baseP];
+					for (auto &a : tw[i]) {
+						a.push_back(i);
+					}
+				}
+				else if (temp_t == dist[i]) {
+					for (auto a : tw[baseP]) {
+						tw[i].push_back(a);
+						tw[i].back().push_back(i);
+					}
+				}
+			}
+		}
+	}
+	int chwl = 0;
+	if (lw[v2].size() != 1) {
+		int mint = INT_MAX;
+		for (int i = 0; i < lw[v2].size(); i++) {
+			int sum = 0;
+			for (int j = 1; j < lw[v2][i].size(); j++) {
+				sum += time[lw[v2][i][j - 1]][lw[v2][i][j]];
+			}
+			if (sum < mint) {
+				mint = sum;
+				chwl = i;
+			}
+		}
+	}
+	int chwt = 0;
+	if (tw[v2].size() != 1) {
+		int minp = INT_MAX;
+		for (int i = 0; i < tw[v2].size(); i++) {
+			if (tw[v2][i].size() < minp) {
+				minp = tw[v2][i].size();
+				chwt = i;
+			}
+		}
+	}
+	if (lw[v2][chwl] != tw[v2][chwt]) {
+		cout << "Distance = " << disl[v2] << ": ";
+		for (int i = 0; i < lw[v2][chwl].size(); i++) {
+			if (i != 0) cout << " -> ";
+			cout << lw[v2][chwl][i];
+		}
+		cout << endl;
+		cout << "Time = " << dist[v2] << ": ";
+		for (int i = 0; i < tw[v2][chwt].size(); i++) {
+			if (i != 0) cout << " -> ";
+			cout << tw[v2][chwt][i];
+		}
+	}
+	else {
+		cout << "Distance = " << disl[v2] << "; ";
+		cout << "Time = " << dist[v2] << ": ";
+		for (int i = 0; i < tw[v2][chwt].size(); i++) {
+			if (i != 0) cout << " -> ";
+			cout << tw[v2][chwt][i];
+		}
+	}
+	cout << endl;
+	return 0;
+}
