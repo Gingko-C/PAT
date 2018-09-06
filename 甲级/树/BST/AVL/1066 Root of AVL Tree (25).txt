@@ -1,0 +1,83 @@
+//AC
+//BST AVL
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+struct node {
+	int val;
+	node *left, *right;
+};
+
+node* leftRotate(node *tree) {
+	node* temp = tree->right;
+	tree->right = temp->left;
+	temp->left = tree;
+	return temp;
+}
+
+node* rightRotate(node *tree) {
+	node* temp = tree->left;
+	tree->left = temp->right;
+	temp->right = tree;
+	return temp;
+}
+
+node* leftRightRotate(node *tree) {
+	tree->left = leftRotate(tree->left);
+	return rightRotate(tree);
+}
+
+node* rightLeftRotate(node *tree) {
+	tree->right = rightRotate(tree->right);
+	return leftRotate(tree);
+}
+
+int getHeight(node *tree) {
+	if (tree == NULL) return 0;
+	int l = getHeight(tree->left), r = getHeight(tree->right);
+	return max(l, r) + 1;
+}
+
+node* insertAVL(node* tree, int val) {
+	if (tree == NULL) {
+		tree = new node();
+		tree->val = val;
+	}
+	else if (val > tree->val) {
+		tree->right = insertAVL(tree->right, val);
+		int l = getHeight(tree->left), r = getHeight(tree->right);
+		if (r - l >= 2) {
+			if (val > tree->right->val) {
+				tree = leftRotate(tree);
+			}
+			else {
+				tree = rightLeftRotate(tree);
+			}
+		}
+	}
+	else {
+		tree->left = insertAVL(tree->left, val);
+		int l = getHeight(tree->left), r = getHeight(tree->right);
+		if (l - r >= 2) {
+			if (val > tree->left->val) {
+				tree = leftRightRotate(tree);
+			}
+			else {
+				tree = rightRotate(tree);
+			}
+		}
+	}
+	return tree;
+}
+int main() {
+	node *root = NULL;
+	int n, val;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		cin >> val;
+		root = insertAVL(root, val);
+	}
+	cout << root->val << endl;
+	return 0;
+}
