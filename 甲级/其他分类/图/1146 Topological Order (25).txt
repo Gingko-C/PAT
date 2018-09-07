@@ -1,0 +1,37 @@
+//AC
+//拓扑排序 是依次输出没有父节点的结点。
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int n, m, k, a, b, temp;
+	bool cflag = 0;
+	cin >> n >> m;
+	vector<vector<int>> f2c(n + 1);
+	vector<vector<int>> c2f(n + 1);
+	vector<bool> flag(n + 1, 0);
+	for (int i = 0; i < m; i++) {
+		cin >> a >> b;
+		c2f[b].push_back(a);
+	}
+	cin >> k;
+	for (int i = 0; i < k; i++) {
+		bool torder = 1;
+		fill(flag.begin(), flag.end(), 0);
+		for (int j = 1; j <= n; j++) {
+			cin >> temp;
+			flag[temp] = 1;
+			for (int i : c2f[temp]) {
+				if (flag[i] == 0) torder = 0;
+			}
+		}
+		if (torder == 0) {
+			if (cflag == 0) cflag = 1;
+			else cout << " ";
+			cout << i;
+		}
+	}
+	return 0;
+}
