@@ -1,0 +1,122 @@
+#include <iostream>
+#include <map>
+#include <string>
+using namespace std;
+
+int main() {
+	string s;
+	cin >> s;
+	map<int, int> m;
+	for (int i = 0; i < s.size(); i++) {
+		m[s[i]]++;
+	}
+	for (auto i = s.rbegin(); i!=s.rend(); i++) {
+		if (m[*i] == 1) {
+			cout << *i << endl;
+			return 0;
+		}
+	}
+	cout << "NULL" << endl;
+	return 0;
+}
+
+
+
+#include <string>
+#include <iostream>
+#include <vector>
+using namespace std;
+string rString(string s);
+int  splitStr(string src, string sSplitor, vector<string> &sArray);
+string GetReserver(string src);
+
+int main() {
+	string str;
+	getline(cin, str);
+	cout << GetReserver(str) << endl;
+	system("pause");
+	return 0;
+}
+
+string rString(string s) {
+	//int iLen = strlen(s.c_str());
+	int iLen = s.size();
+	for (int i = 0; i < (iLen / 2); i++) {
+		swap(s[i], s[iLen - i - 1]);
+	}
+	return s;
+}
+int  splitStr(string src, string sSplitor, vector<string> &sArray) {
+	int i = 0, pos;
+	int len = sSplitor.length();
+	sArray.clear();
+	pos = src.find(sSplitor);
+	while (pos > 0) {
+		sArray.push_back(src.substr(0, pos));
+		src = src.substr(pos + len, src.length());
+		pos = src.find(sSplitor);
+	}
+
+	sArray.push_back(src);
+	return sArray.size();
+}
+string GetReserver(string src) {
+	vector<string> str;
+	int iCount = splitStr(src, " ", str);
+	for (size_t i = 0; i < str.size(); i++) {
+		str[i] = rString(str[i]);
+	}
+	string sResult = "";
+	for (size_t i = 0; i < str.size(); i++) {
+		sResult += str[i];
+		if (i != str.size() - 1)
+			sResult += " ";
+	}
+	return sResult;
+}
+
+
+
+
+
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+void bigNumberMultiply(const string num1, const string num2, vector<int>& res) {
+
+	for (int i = 0; i < num1.length(); ++i) {
+		for (int j = 0; j < num2.length(); ++j) {
+			res[i + j + 1] += ((int)num1[i] - '0') * ((int)num2[j] - '0');
+		}
+	}
+
+	for (int k = res.size() - 1; k > 0; --k) {
+		if (res[k] > 10) {
+			res[k - 1] += res[k] / 10;
+			res[k] %= 10;
+		}
+	}
+}
+
+
+int main() {
+	string str1;
+	string str2;
+	cin >> str1;
+	cin >> str2;
+
+	vector<int> res(str1.length() + str2.length(), 0);
+	bigNumberMultiply(str1, str2, res);
+
+	bool flag = true;
+	for (int i = 0; i < res.size(); ++i) {
+		if (res[i] == 0 && flag)
+			continue;
+		if (res[i] != 0)
+			flag = false;
+		printf("%d", res[i]);
+	}
+	printf("\n");
+	return 0;
+}
