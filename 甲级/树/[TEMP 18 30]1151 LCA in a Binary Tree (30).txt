@@ -1,0 +1,123 @@
+//18/30
+//三个用例超时
+#include <iostream>
+#include <vector>
+#include <map>
+#include <climits>
+using namespace std;
+
+struct treeNode {
+	int val;
+	treeNode *left, *right;
+	treeNode(int x = 0) :val(x), left(NULL), right(NULL) {}
+};
+
+//vector<int> preorder;
+vector<int> inorder;
+//vector<int> preflag;
+map<int, int> preorder;
+map<int, int> preflag;
+vector<int> path1, path2;
+int findRoot(int left, int right) {
+	int minval = INT_MAX, dest = -1;
+	for (int i = left; i <= right; i++) {
+		if (preflag[inorder[i]] == 0) {
+			if (preorder[inorder[i]] < minval) {
+				minval = preorder[inorder[i]];
+				dest = i;
+			}
+		}
+	}
+	preflag[inorder[dest]] = 1;
+	return dest;
+}
+
+treeNode* initTree(int left, int right) {
+	if (left > right) return NULL;
+	int p = findRoot(left, right);
+	treeNode *root = new treeNode(inorder[p]);
+	root->left = initTree(left, p - 1);
+	root->right = initTree(p + 1, right);
+	return root;
+}
+
+bool findval(treeNode *tree, int val, vector<int> &road) {
+	if (tree == NULL) return 0;
+	if (tree->val == val) {
+		road.push_back(val);
+		return 1;
+	}
+	if (findval(tree->left, val, road)) {
+		road.push_back(tree->val);
+		return 1;
+	}
+	if (findval(tree->right, val, road)) {
+		road.push_back(tree->val);
+		return 1;
+	}
+	return 0;
+}
+
+int findLCA(vector<int> &a, vector<int> &b) {
+	int LCA = -1;
+	for (int i = a.size() - 1, j = b.size() - 1; i >= 0 && j >= 0; i--, j--) {
+		if (a[i] == b[j]) LCA = a[i];
+		else break;
+	}
+	return LCA;
+}
+
+int main()
+{
+	int m, n, temp, a, b;
+	scanf("%d%d", &m, &n);
+	//preorder.resize(n);
+	inorder.resize(n);
+	//preflag.resize(n);
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &inorder[i]);
+	}
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &temp);
+		preorder[temp] = i;
+	}
+
+	treeNode *root = initTree(0, n - 1);
+	/*queue<treeNode*> q;
+	q.push(root);
+	while (!q.empty()) {
+		treeNode *t = q.front();
+		cout << t->val << " ";
+		q.pop();
+		if (t->left != NULL) {
+			q.push(t->left);
+		}
+		if (t->right != NULL) {
+			q.push(t->right);
+		}
+	}*/
+	for (int i = 0; i < m; i++) {
+		scanf("%d%d", &a, &b);
+		vector<int> ar, br;
+		bool aflag = findval(root, a, ar);
+		bool bflag = findval(root, b, br);
+		if (aflag&&bflag) {
+			int lca = findLCA(ar, br);
+			if (lca == a) {
+				cout << a << " is an ancestor of " << b << "." << endl;
+			}
+			else if (lca == b) {
+				cout << b << " is an ancestor of " << a << "." << endl;
+			}
+			else cout << "LCA of " << a << " and " << b << " is " << lca << "." << endl;
+		}
+		else if (aflag == 1) {
+			cout << "ERROR: " << b << " is not found." << endl;
+		}
+		else if (bflag == 1) {
+			cout << "ERROR: " << a << " is not found." << endl;
+		}
+		else cout << "ERROR: " << a << " and " << b << " are not found." << endl;
+	}
+	return 0;
+}
