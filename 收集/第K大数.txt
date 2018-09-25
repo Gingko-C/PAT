@@ -1,0 +1,40 @@
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <set>
+#include <queue>
+#include <iterator>
+using namespace std;
+
+int mypartition(vector<int> &v, int left, int right) {
+	int tail = left;
+	for (int i = left; i < right; i++) {
+		if (v[i] < v[right]) swap(v[i], v[tail++]);
+	}
+	swap(v[tail], v[right]);
+	return tail;
+}
+
+int findKthNum(vector<int> &v, int k) {
+	int left = 0, right = v.size() - 1;
+	while (right >= left) {
+		int p = mypartition(v, left, right);
+		
+		if (p > k - 1) {
+			right = p - 1;
+		}
+		else {
+			left = p + 1;
+		}
+	}
+	return left;
+}
+
+int main() {
+	vector<int> v = { 7,6,5,4,3,2,1 };
+	int k = 5;
+	cout << findKthNum(v, k) << endl;
+	system("pause");
+	return 0;
+}
