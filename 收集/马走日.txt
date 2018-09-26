@@ -1,0 +1,39 @@
+//BFS解决马走日问题
+#include <iostream>
+#include <string> 
+#include <cmath> 
+#include <vector>
+#include <queue>
+using namespace std;
+
+const int MAX_WIDTH = 100, MAX_HIGH = 100;
+int main()
+{
+	vector<pair<int, int>> horsemove = { {2,1},{2,-1},{-2,1},{-2,-1},{1,-2},{-1,-2},{1,2},{-1,2} };
+	vector<vector<int>> visit(MAX_HIGH+1, vector<int>(MAX_WIDTH+1));
+	vector<vector<int>> deep(MAX_HIGH + 1, vector<int>(MAX_WIDTH + 1));
+	pair<int,int> stpoint, edpoint;
+	cin >> stpoint.second >> stpoint.first >> edpoint.second >> edpoint.first;
+	queue<pair<int, int>> q;
+	q.push(stpoint);
+	visit[stpoint.first][stpoint.second] = 1;
+	deep[stpoint.first][stpoint.second] = 0;
+	while (!q.empty()) {
+		pair<int, int> t = q.front();
+		q.pop();
+		if (t.first == edpoint.first&&t.second == edpoint.second) break;
+		for (auto i : horsemove) {
+			int row = t.first + i.first, col = t.second + i.second;
+			if (row >= 0 && col >= 0 && row <= MAX_HIGH && col <= MAX_WIDTH) {
+				if (visit[row][col] == 0) {
+					visit[row][col] = 1;
+					deep[row][col] = deep[t.first][t.second] + 1;
+					q.push({ row,col });
+				}
+			}
+		}
+	}
+	cout << deep[edpoint.first][edpoint.second] << endl;
+	system("pause");
+	return 0;
+}
