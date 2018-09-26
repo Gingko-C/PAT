@@ -1,0 +1,25 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main()
+{
+	int n, m = 6;
+	cin >> n;
+	vector<int> money = { 1,5,10,20,50,100 };
+	vector<vector<long long>> dp(m, vector<long long>(n + 1));
+	for (int i = 0; i <= n; i++) {
+		dp[0][i] = 1;
+	}
+	for (int i = 0; i < m; i++) {
+		dp[i][0] = 1;
+	}
+	for (int i = 1; i < m; i++) {
+		for (int j = 1; j <= n; j++) {
+			if (j >= money[i])	dp[i][j] = dp[i][j - money[i]] + dp[i - 1][j];
+			else dp[i][j] = dp[i - 1][j];
+		}
+	}
+	cout << dp[m - 1][n] << endl;
+	return 0;
+}
